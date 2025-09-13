@@ -1,0 +1,1265 @@
+{
+  "personas": [
+    {
+      "name": "Sophia Harrington",
+      "avatar_emoji": "💎",
+      "persona_type": "Ultra-HNW Collector - Old Money",
+      "age": 52,
+      "net_worth": "$120M",
+      "annual_spend_fashion": "$300K",
+      "intelligence_level": "Very High - Harvard MBA, strategic thinker",
+      "location": "Upper East Side, Manhattan, NY",
+      "secondary_residences": ["East Hampton estate", "Aspen ski lodge", "London townhouse"],
+      "ethnicity": "Caucasian",
+
+      "wealth_source": "4th generation inherited wealth + business growth",
+      "family_wealth_origin": "Great-grandfather's shipping fortune (1890s), expanded through railroads and steel",
+      "career_path": "Goldman Sachs → Family business CEO → Grew fortune 10x",
+
+      "personality_profile": {
+        "core_traits": ["Competitive", "Fair-minded", "Protective", "Impatient with incompetence"],
+        "communication_style": "Measured, thoughtful, expects intellectual equality",
+        "small_talk_strengths": ["Tennis", "Golf", "Art", "Alzheimer's research"],
+        "trust_patterns": "Very generous initially, but holds grudges when betrayed"
+      },
+
+      "daily_challenges": [
+        "Managing hyperactive Red Setter in NYC",
+        "Balancing charity work with business",
+        "Preparing daughter for Harvard admission"
+      ],
+
+      "key_quotes": [
+        "I don't buy trends, I buy pieces that will be relevant in twenty years.",
+        "TheRealReal sold my $2,000 Brunello Cucinelli sweater for $17 - never again.",
+        "Time is my most valuable asset. Any service that saves me time is worth considering.",
+        "I'd immediately look for the purchase date filter - I keep meticulous records.",
+        "The VIP-to-VIP marketplace is brilliant! I'd much rather sell to other discerning customers who understand the value of these pieces."
+      ],
+
+      "character_bible": {
+        "visual_dna": {
+          "physical_build": "5'6\", elegant posture maintained through private Pilates and tennis",
+          "face_shape": "Oval with refined bone structure and subtle crow's feet showing wisdom",
+          "hair": "Silver blonde professionally styled in sophisticated bob, impeccably maintained",
+          "eyes": "Intelligent blue eyes with discerning, confident expression",
+          "skin": "Fair complexion with natural aging, well-maintained through quality skincare",
+          "style_aesthetic": "Timeless elegance - investment pieces in neutral tones that whisper rather than shout",
+          "distinctive_features": [
+            "Refined cheekbones and aristocratic bone structure",
+            "Thin, well-defined eyebrows",
+            "Confident posture that commands respect",
+            "Subtle smile that suggests insider knowledge"
+          ]
+        },
+
+        "signature_elements": [
+          "Hermès Birkin collection rotated seasonally",
+          "Cartier Tank watch - never removed",
+          "Pearl stud earrings (family heirloom)",
+          "Brunello Cucinelli cashmere in cream, beige, navy",
+          "The Row tailoring for business",
+          "Hermès silk scarves as accent pieces",
+          "Minimal but expensive jewelry",
+          "Quality leather gloves for outdoor events"
+        ],
+
+        "setting": {
+          "primary_location": "Corner office in private equity firm with Manhattan skyline view",
+          "secondary_locations": ["East Hampton estate library", "Museum board meeting room"],
+          "lighting_style": "Soft natural light from large windows, professional but warm",
+          "camera_angles": "Slightly elevated to convey quiet authority, medium shot",
+          "background_elements": [
+            "Abstract art collection visible on walls",
+            "Fresh white orchids in crystal Baccarat vase",
+            "Leather-bound first editions",
+            "Silver-framed family photos from Harvard, tennis tournaments",
+            "Minimal but expensive desk accessories in gold and crystal"
+          ],
+          "color_palette": "Cream, champagne, deep navy, gold accents, natural wood tones",
+          "mood_atmosphere": "Sophisticated confidence, understated luxury, quiet authority"
+        },
+
+        "video_mannerisms": {
+          "speaking_style": "Measured delivery with thoughtful pauses before important points, uses luxury industry terminology naturally",
+          "delivery_pace": "Professional cadence with emphasis on key insights, expects intellectual equality",
+          "facial_expressions": "Confident but approachable, slight smile for positive topics, thoughtful frown when discussing incompetence (like TheRealReal)",
+          "body_language": "Excellent posture throughout, minimal but purposeful hand gestures, may touch watch or adjust scarf when thinking",
+          "eye_contact": "Direct camera engagement showing authority and decades of experience",
+          "voice_tone": "Refined East Coast accent, warm but authoritative, conveys generational wealth without ostentation"
+        },
+
+        "consistency_anchors": [
+          "52-year-old Caucasian woman with aristocratic bearing",
+          "Silver blonde bob haircut, professionally maintained",
+          "Intelligent blue eyes with confident expression",
+          "Oval face with refined bone structure and subtle aging",
+          "Cream or navy Brunello Cucinelli cashmere",
+          "Cartier Tank watch always visible",
+          "Pearl stud earrings",
+          "Manhattan corner office setting with skyline view"
+        ],
+
+        "gemini_image_prompt": "Professional portrait photograph of Sophia Harrington, a 52-year-old Caucasian woman with sophisticated silver blonde bob haircut and intelligent blue eyes. She has an elegant oval face with refined bone structure, subtle crow's feet showing wisdom, and aristocratic cheekbones. Fair skin with natural aging gracefully, wearing a cream-colored Brunello Cucinelli cashmere sweater with a subtle Hermès scarf accent and classic pearl stud earrings. Her Cartier Tank watch is prominently visible on her wrist.\n\nSetting: Corner office in Manhattan private equity firm with large windows showing skyline, soft natural lighting creating warm professional atmosphere. Background includes museum-quality abstract art, fresh white orchids in crystal Baccarat vase, leather-bound first editions, and minimal expensive desk accessories in gold and crystal.\n\nPhotography style: High-end executive portrait, sharp focus, professional lighting, 85mm lens, shallow depth of field, luxurious but understated aesthetic. Camera angle slightly elevated to convey quiet authority, medium shot from chest up showing confident posture.\n\nTechnical specs: Photorealistic, 4K quality, professional photography lighting, natural skin texture with subtle aging, no filters, emphasizing timeless elegance and generational wealth.",
+
+        "veo3_delivery_characteristics": {
+          "speaking_pace": "Measured and deliberate, with thoughtful pauses before insights",
+          "facial_expressions": "Confident but approachable, slight smile for positive content, disapproving frown for poor service",
+          "hand_gestures": "Minimal but purposeful, hands often clasped elegantly, may touch watch when making time-related points",
+          "voice_tone": "Refined East Coast accent, warm but authoritative, conveys decades of luxury experience",
+          "posture": "Excellent throughout, slight forward lean when making key points about quality or service"
+        }
+      }
+    },
+
+    {
+      "name": "Emma Rodriguez",
+      "avatar_emoji": "🗽",
+      "persona_type": "Strategic Builder - New Money",
+      "age": 29,
+      "net_worth": "$8M",
+      "annual_spend_fashion": "$75K",
+      "intelligence_level": "High - Stanford CS + MBA, analytical mindset",
+      "location": "West Hollywood, Los Angeles, CA",
+      "secondary_residences": ["None yet - reinvesting everything"],
+      "ethnicity": "Mexican-American",
+
+      "wealth_source": "Self-made tech entrepreneur",
+      "family_background": "Middle-class parents, first generation wealth",
+      "career_path": "Google engineer → Fintech startup founder → $50M acquisition",
+
+      "personality_profile": {
+        "core_traits": ["Data-driven", "Strategic", "Perfectionist", "Community-minded"],
+        "communication_style": "Precise, uses metrics, asks detailed questions",
+        "anxiety_points": ["Making expensive mistakes", "Appearing naive about luxury"],
+        "learning_style": "Research-heavy, wants to understand before purchasing"
+      },
+
+      "current_life_phase": {
+        "relationship_status": "Dating fellow entrepreneur Marcus (also new money)",
+        "living_situation": "Modern West Hollywood condo, minimalist aesthetic",
+        "career_focus": "Building next startup while learning luxury market",
+        "social_circle": "Tech entrepreneurs, some old money contacts through Marcus"
+      },
+
+      "fashion_psychology": {
+        "shopping_behavior": "Research-driven, reads reviews, compares options",
+        "investment_mindset": "Wants pieces that work multiple ways",
+        "brand_relationships": "Building relationships with personal shoppers",
+        "style_evolution": "Transitioning from startup casual to sophisticated luxury"
+      },
+
+      "key_quotes": [
+        "I need to understand the ROI on every piece - cost per wear, versatility, resale value.",
+        "Coming from tech, I expect data and transparency in luxury shopping too.",
+        "I want to build a capsule wardrobe that works for boardrooms and dinner parties.",
+        "This would help me be more strategic about what I already own before buying new pieces.",
+        "Show me the analytics and I can make better decisions."
+      ],
+
+      "character_bible": {
+        "visual_dna": {
+          "physical_build": "5'5\", athletic build from yoga and hiking, confident but approachable posture",
+          "face_shape": "Heart-shaped with defined cheekbones, youthful but professional",
+          "hair": "Long dark brown hair with subtle caramel highlights, styled in loose waves or sleek ponytail",
+          "eyes": "Warm brown eyes with intelligent, analytical expression, shows enthusiasm when engaged",
+          "skin": "Warm olive complexion with natural glow from active lifestyle",
+          "style_aesthetic": "Modern minimalist with strategic luxury investments, clean lines and quality basics",
+          "distinctive_features": [
+            "Expressive eyebrows that show engagement",
+            "Warm, genuine smile that lights up when discussing solutions",
+            "Contemporary clear-frame glasses",
+            "Natural beauty enhanced rather than covered"
+          ]
+        },
+
+        "signature_elements": [
+          "Delicate gold jewelry - small hoop earrings, thin chain necklace",
+          "Apple Watch with brown leather band",
+          "Contemporary eyeglasses (clear or tortoiseshell frames)",
+          "Quality blazers in cream, navy, camel",
+          "Well-fitted dark jeans or tailored trousers",
+          "Emerging luxury brands like Keton, Ganni, Staud",
+          "Neutral color palette: cream, beige, navy, olive green",
+          "Quality leather handbag (investment piece, researched thoroughly)"
+        ],
+
+        "setting": {
+          "primary_location": "Modern West Hollywood apartment with minimalist decor",
+          "secondary_locations": ["Bright coffee shop with laptop", "Clean co-working space"],
+          "lighting_style": "Bright natural light, clean and energetic, optimistic atmosphere",
+          "camera_angles": "Slightly above eye level to convey approachable ambition",
+          "background_elements": [
+            "MacBook Pro and planning materials visible",
+            "Small succulent plants and fiddle leaf fig",
+            "Coffee cup or reusable water bottle",
+            "Fashion and business books on floating white shelves",
+            "Clean, organized space with strategic pops of color",
+            "Vision board or planning materials showing goal-oriented mindset"
+          ],
+          "color_palette": "White walls, warm wood accents, sage green plants, soft blush pink accents",
+          "mood_atmosphere": "Optimistic energy, focused determination, approachable expertise, growth mindset"
+        },
+
+        "video_mannerisms": {
+          "speaking_style": "Enthusiastic but professional, uses tech and business terminology naturally, asks analytical questions",
+          "delivery_pace": "Energetic but controlled, enthusiasm evident when discussing solutions or data",
+          "facial_expressions": "Bright engagement, thoughtful frown when analyzing problems, eyes light up when discussing optimization or ROI",
+          "body_language": "Good posture but relaxed, gestures with purpose (pointing, counting on fingers), touches glasses when thinking deeply, leans forward when excited about concepts",
+          "eye_contact": "Direct and engaged, shows learning mindset and genuine curiosity",
+          "voice_tone": "Optimistic determination, strategic thinking evident, slight excitement when discussing data or solutions"
+        },
+
+        "consistency_anchors": [
+          "29-year-old Mexican-American woman with warm energy",
+          "Long dark brown hair with caramel highlights",
+          "Warm brown eyes behind contemporary clear glasses",
+          "Heart-shaped face with defined cheekbones",
+          "Cream blazer over navy or white top",
+          "Delicate gold jewelry and Apple Watch",
+          "Modern minimalist West Hollywood apartment setting"
+        ],
+
+        "gemini_image_prompt": "Professional portrait photograph of Emma Rodriguez, a 29-year-old Mexican-American woman with long dark brown hair styled in loose waves and warm brown eyes behind contemporary clear-frame glasses. She has a heart-shaped face with defined cheekbones, warm olive skin with natural glow, and an athletic build from yoga and hiking. Her expression shows intelligent enthusiasm and analytical thinking.\n\nWearing a cream-colored blazer over a soft navy top with delicate gold jewelry - small hoop earrings and thin chain necklace. Apple Watch with brown leather band visible on wrist. Style is modern minimalist with strategic luxury investment pieces, representing her transition from tech startup to sophisticated professional.\n\nSetting: Bright modern West Hollywood apartment with clean minimalist decor, large windows with abundant natural light. Background includes MacBook Pro, small succulent plants, coffee cup, and fashion/business books on floating white shelves. Color palette of white walls, warm wood accents, and sage green plants.\n\nPhotography style: Contemporary professional portrait, bright natural lighting, aspirational millennial aesthetic, 50mm lens, optimistic and energetic mood. Camera angle slightly above eye level conveying approachable ambition, medium shot showing confident but relaxed posture.\n\nTechnical specs: Photorealistic, bright natural lighting, sharp focus, no heavy filters, authentic skin texture, emphasizing warmth and intelligence.",
+
+        "veo3_delivery_characteristics": {
+          "speaking_pace": "Energetic but controlled, enthusiasm evident when discussing solutions",
+          "facial_expressions": "Bright engagement, thoughtful analysis, excitement when discussing data or optimization",
+          "hand_gestures": "Uses hands to emphasize points, touches glasses when thinking, counts on fingers for analysis",
+          "voice_tone": "Optimistic determination, strategic thinking evident, genuine curiosity and learning mindset",
+          "posture": "Good but relaxed, leans forward when excited about concepts or solutions"
+        }
+      }
+    },
+
+    {
+      "name": "Margaret Chen",
+      "avatar_emoji": "🏛️",
+      "persona_type": "Traditional Luxury - Professional Earner",
+      "age": 45,
+      "net_worth": "$15M",
+      "annual_spend_fashion": "$120K",
+      "intelligence_level": "Very High - Yale Law, senior partner mindset",
+      "location": "Pacific Heights, San Francisco, CA",
+      "secondary_residences": ["Napa Valley vineyard home"],
+      "ethnicity": "Chinese-American",
+
+      "wealth_source": "Legal career - corporate law partner for 15 years",
+      "family_background": "Upper-middle class immigrants, high education values",
+      "career_path": "BigLaw → Equity partner → Building generational wealth",
+
+      "personality_profile": {
+        "core_traits": ["Privacy-focused", "Traditional", "Methodical", "Quality-obsessed"],
+        "communication_style": "Formal, measured, values discretion",
+        "technology_comfort": "Low - prefers human relationships",
+        "luxury_philosophy": "Traditional channels, established relationships"
+      },
+
+      "current_life_challenges": {
+        "work_pressure": "Senior partner track, 70-hour weeks",
+        "family_dynamics": "Caring for aging parents while raising teen daughter",
+        "social_obligations": "Museum boards, legal foundation charity work"
+      },
+
+      "shopping_patterns": {
+        "preferred_venues": "In-store at Saks, Neiman Marcus with personal shopper",
+        "brand_loyalty": "Chanel, Hermès, Max Mara - established relationships",
+        "privacy_needs": "Extremely concerned about data sharing and discretion",
+        "service_expectations": "White-glove service, never wants to feel like a transaction"
+      },
+
+      "key_quotes": [
+        "I've shopped with the same personal stylist at Saks for eight years. That relationship has value.",
+        "Privacy and discretion are non-negotiable. My shopping habits are not data points.",
+        "I want pieces that work in the courtroom and at charity galas - timeless, appropriate.",
+        "I'd need assurance about data privacy and how this preserves my relationships with advisors.",
+        "Traditional luxury service has always worked for me. I'd need to see clear benefits before changing."
+      ],
+
+      "character_bible": {
+        "visual_dna": {
+          "physical_build": "5'4\", elegant posture with refined bearing developed through decades of professional presence",
+          "face_shape": "Oval with subtle aging that suggests wisdom, experience, and thoughtful reserve",
+          "hair": "Shoulder-length black hair with elegant silver touches, professionally styled in classic cut",
+          "eyes": "Intelligent dark brown eyes that convey both wisdom and thoughtful skepticism",
+          "skin": "Light olive complexion, well-maintained with subtle signs of maturity and professional stress",
+          "style_aesthetic": "Classic luxury with conservative sensibility - understated but unmistakably expensive",
+          "distinctive_features": [
+            "Elegant silver touches in hair showing distinguished maturity",
+            "Composed, thoughtful expression with hint of reserve",
+            "Professional bearing developed through legal career",
+            "Subtle but expensive jewelry that signals established taste"
+          ]
+        },
+
+        "signature_elements": [
+          "Hermès silk scarves in subtle patterns and classic colors",
+          "Classic pearl earrings or small diamond studs",
+          "Cartier Tank watch or similar classic timepiece",
+          "Chanel or Max Mara tailoring in navy, black, cream",
+          "Structured handbag (Hermès Kelly, Chanel Classic)",
+          "Quality cashmere in neutral tones",
+          "Traditional luxury jewelry with heritage value",
+          "Conservative but expensive makeup emphasizing natural elegance"
+        ],
+
+        "setting": {
+          "primary_location": "Traditional Pacific Heights home office with law library",
+          "secondary_locations": ["Private club dining room", "Museum board meeting room"],
+          "lighting_style": "Warm, sophisticated lighting - brass table lamps and natural light",
+          "camera_angles": "Respectful eye level to convey authority and dignity",
+          "background_elements": [
+            "Traditional mahogany desk and leather chairs",
+            "Law books and legal journals on built-in shelves",
+            "Fresh white orchids in crystal vase",
+            "Family photos in silver frames showing daughter and parents",
+            "Art collection with tasteful, traditional pieces",
+            "Traditional luxury objects (crystal decanter, fine china, antique clock)"
+          ],
+          "color_palette": "Deep blues, creams, gold accents, rich mahogany wood tones",
+          "mood_atmosphere": "Understated elegance, quiet confidence, traditional luxury, professional gravitas"
+        },
+
+        "video_mannerisms": {
+          "speaking_style": "Measured, thoughtful pace with careful word choice, uses traditional business language and legal precision",
+          "delivery_pace": "Careful and deliberate, considers each word, speaks with authority earned through experience",
+          "facial_expressions": "Composed with subtle warmth, reserved smile, raised eyebrow when expressing skepticism about technology",
+          "body_language": "Excellent posture maintained consistently, minimal but purposeful hand gestures, may touch pearls or watch when considering responses",
+          "eye_contact": "Professional distance with quiet confidence, maintains dignity while being approachable",
+          "voice_tone": "Quiet authority, references decades of experience and established practices, values discretion"
+        },
+
+        "consistency_anchors": [
+          "45-year-old Chinese-American woman with professional gravitas",
+          "Shoulder-length black hair with distinguished silver touches",
+          "Intelligent dark brown eyes with thoughtful reserve",
+          "Oval face with refined maturity and legal authority",
+          "Navy Chanel blazer or similar classic tailoring",
+          "Classic pearl stud earrings",
+          "Cartier Tank watch",
+          "Traditional Pacific Heights home office setting"
+        ],
+
+        "gemini_image_prompt": "Professional portrait photograph of Margaret Chen, a 45-year-old Chinese-American woman with shoulder-length black hair showing elegant silver touches, styled in a classic professional cut. She has an oval face with intelligent dark brown eyes that convey both wisdom and thoughtful reserve. Light olive complexion with well-maintained appearance suggesting refined maturity and legal gravitas.\n\nWearing a navy Chanel blazer with classic pearl stud earrings and a Cartier Tank watch. A subtle Hermès silk scarf in cream and navy tones adds sophistication. Her style represents traditional luxury with conservative sensibility - understated but unmistakably expensive, appropriate for both courtroom and charity gala.\n\nSetting: Elegant Pacific Heights home office with traditional mahogany desk, leather-bound law books, fresh white orchids in crystal vase, and family photos in silver frames. Warm lighting from brass table lamps creates sophisticated atmosphere with deep blue and cream color palette.\n\nPhotography style: Classic executive portrait, warm professional lighting, timeless luxury aesthetic, 85mm lens, emphasis on refinement and heritage. Camera angle at respectful eye level conveying quiet authority and dignity, medium shot with composed elegant posture.\n\nTechnical specs: Photorealistic, classic portrait lighting, rich colors, professional photography quality, natural skin texture with subtle aging, emphasizing traditional luxury and legal authority.",
+
+        "veo3_delivery_characteristics": {
+          "speaking_pace": "Careful and measured, considers each word, speaks with earned authority",
+          "facial_expressions": "Composed with subtle warmth, reserved smile, skeptical eyebrow raise when discussing technology",
+          "hand_gestures": "Minimal and purposeful, may touch pearls or watch when considering, legal precision in gestures",
+          "voice_tone": "Quiet authority, references experience and established practices, values privacy and discretion",
+          "posture": "Formal and excellent throughout, traditional business bearing, dignified presence"
+        }
+      }
+    },
+
+    {
+      "name": "Isabella Vandenberg-Chen",
+      "avatar_emoji": "👸",
+      "persona_type": "Nepotism Baby - Doesn't Work",
+      "age": 26,
+      "net_worth": "$45M+ (trust fund)",
+      "annual_spend_fashion": "$200K",
+      "intelligence_level": "Above Average - Art history degree, culturally sophisticated",
+      "location": "Tribeca, New York City",
+      "secondary_residences": ["Family compound in Hamptons", "Parents' place in Gstaad"],
+      "ethnicity": "Mixed - Dutch old money father, Taiwanese mother",
+
+      "wealth_source": "100% inherited - never worked a day",
+      "family_background": "Father: 6th generation Vandenberg shipping fortune, Mother: Tech heiress",
+      "career_status": "Professional socialite, 'lifestyle influencer,' charity board member",
+
+      "personality_profile": {
+        "core_traits": ["Entitled but not malicious", "Culturally sophisticated", "Impulsive", "Socially aware"],
+        "intelligence_type": "High emotional/social intelligence, lower business acumen",
+        "work_ethic": "Has never needed to work, lacks discipline",
+        "self_awareness": "Knows she's privileged, sometimes feels guilty about it"
+      },
+
+      "daily_routine": {
+        "morning": "10 AM wake, matcha and meditation, pilates class",
+        "afternoon": "Shopping, lunch with friends, gallery openings",
+        "evening": "Dinner parties, charity events, exclusive nightlife",
+        "responsibilities": "Very few - family office manages everything"
+      },
+
+      "shopping_behavior": {
+        "impulse_patterns": "Buys what she loves without budget constraints",
+        "trend_following": "Early adopter, influences others through social media",
+        "brand_relationships": "Known by name at every luxury store",
+        "storage_issues": "Has so many clothes she forgets what she owns"
+      },
+
+      "current_life_situation": {
+        "relationship": "Dating contemporary artist (parents disapprove)",
+        "social_pressure": "Expected to marry within social class",
+        "identity_crisis": "Wondering if she should do something 'meaningful'",
+        "family_expectations": "Represent family well, marry appropriately, have children"
+      },
+
+      "key_quotes": [
+        "I know I'm incredibly lucky. Sometimes I wish I had to work for things like everyone else.",
+        "My closet is so full I literally forget what I own. It's actually embarrassing.",
+        "I want to use my privilege for good, but I don't know where to start."
+      ],
+
+      "character_bible": {
+        "visual_dna": {
+          "physical_build": "5'6\", naturally slender with graceful posture, maintains fitness through Pilates and yoga",
+          "face_shape": "Delicate oval face with mixed Asian-European features, naturally beautiful",
+          "hair": "Long silky black hair with subtle highlights, styled effortlessly chic or in loose waves",
+          "eyes": "Dark brown almond-shaped eyes with naturally long lashes, expressive and slightly dreamy",
+          "skin": "Flawless porcelain complexion with subtle golden undertones, naturally luminous",
+          "style_aesthetic": "Effortless luxury - expensive pieces worn casually, influenced by both Eastern and Western fashion",
+          "distinctive_features": [
+            "Mixed heritage beauty combining best of both cultures",
+            "Naturally perfect features requiring minimal makeup",
+            "Graceful hand movements from art history training",
+            "Subtle confidence that comes from never doubting her place"
+          ]
+        },
+
+        "signature_elements": [
+          "Family heirloom jewelry mixed with contemporary pieces",
+          "Vintage Chanel and modern designers combined",
+          "Silk scarves worn in creative ways",
+          "Designer sunglasses (often on top of head)",
+          "Luxury athleisure for Pilates (Alo, Lululemon elevated pieces)",
+          "Fresh flowers or art-inspired accessories",
+          "Neutral palette with unexpected pops of color",
+          "Museum-quality handbags rotated frequently"
+        ],
+
+        "setting": {
+          "primary_location": "Tribeca loft with gallery-quality art collection and floor-to-ceiling windows",
+          "secondary_locations": ["Gallery opening with champagne", "Hamptons family compound"],
+          "lighting_style": "Natural light flooding through large windows, golden hour preference",
+          "camera_angles": "Slightly below eye level to capture natural elegance and height",
+          "background_elements": [
+            "Contemporary art pieces and gallery walls",
+            "Fresh white peonies in multiple crystal vases",
+            "Coffee table books on art and fashion",
+            "Meditation cushions and crystals",
+            "Designer furniture mixing vintage and modern",
+            "Multiple shopping bags from luxury stores visible"
+          ],
+          "color_palette": "White, cream, soft grays with pops of blush pink and sage green",
+          "mood_atmosphere": "Effortless luxury, artistic sophistication, slight melancholy about purpose"
+        },
+
+        "video_mannerisms": {
+          "speaking_style": "Soft-spoken but articulate, uses art and culture references naturally, slight vulnerability in admissions",
+          "delivery_pace": "Relaxed and flowing, no urgency, comfortable with pauses",
+          "facial_expressions": "Naturally beautiful with subtle expressions, slight guilt when discussing privilege, brightens when discussing art",
+          "body_language": "Graceful and fluid movements, touches jewelry when thoughtful, casual elegance in posture",
+          "eye_contact": "Gentle and genuine, sometimes looks away when feeling guilty about privilege",
+          "voice_tone": "Soft and melodic, cultured accent, hint of vulnerability when discussing identity"
+        },
+
+        "consistency_anchors": [
+          "26-year-old mixed Asian-European heritage with ethereal beauty",
+          "Long silky black hair with subtle highlights",
+          "Dark brown almond-shaped eyes with natural elegance",
+          "Delicate oval face with flawless complexion",
+          "Effortless luxury styling mixing vintage and contemporary",
+          "Natural jewelry layering and silk scarves",
+          "Tribeca loft with art collection and natural light"
+        ],
+
+        "gemini_image_prompt": "Professional portrait photograph of Isabella Vandenberg-Chen, a 26-year-old woman of mixed Dutch-Taiwanese heritage with ethereal natural beauty. She has long silky black hair with subtle caramel highlights styled in effortless waves, and dark brown almond-shaped eyes with naturally long lashes. Delicate oval face with flawless porcelain complexion showing golden undertones, naturally luminous skin requiring minimal makeup.\n\nWearing a vintage cream Chanel blazer over a silk camisole with layered family heirloom necklaces mixed with contemporary jewelry. A vintage Hermès silk scarf is artfully draped, and subtle diamond studs catch the light. Her style represents effortless luxury - expensive pieces worn with casual sophistication.\n\nSetting: Bright Tribeca loft with floor-to-ceiling windows, contemporary art on gallery walls, fresh white peonies in crystal vases, coffee table books on art and fashion. Natural light floods the space creating an artistic, sophisticated atmosphere.\n\nPhotography style: Editorial lifestyle portrait, abundant natural light, ethereal and artistic mood, 50mm lens, shallow depth of field. Camera angle slightly below eye level to capture natural elegance and grace, medium shot showing relaxed confident posture.\n\nTechnical specs: Photorealistic, golden hour natural lighting, soft focus, emphasizing natural beauty and effortless luxury, no heavy makeup, authentic mixed heritage features.",
+
+        "veo3_delivery_characteristics": {
+          "speaking_pace": "Relaxed and flowing, no urgency, comfortable with thoughtful pauses",
+          "facial_expressions": "Naturally beautiful with subtle expressions, slight guilt when discussing privilege",
+          "hand_gestures": "Graceful and fluid movements, touches jewelry when thoughtful, casual elegance",
+          "voice_tone": "Soft and melodic, cultured but not pretentious, hint of vulnerability about purpose",
+          "posture": "Naturally graceful, effortless elegance, relaxed confidence"
+        }
+      }
+    },
+
+    {
+      "name": "Tiffany Morrison-Kellerman",
+      "avatar_emoji": "💅",
+      "persona_type": "Trophy Wife - Married Into Money",
+      "age": 38,
+      "net_worth": "$200M+ (husband's wealth)",
+      "annual_spend_fashion": "$400K",
+      "intelligence_level": "Street smart, socially intelligent, underestimated",
+      "location": "Beverly Hills, CA",
+      "secondary_residences": ["Aspen house", "Martha's Vineyard estate", "NYC penthouse"],
+      "ethnicity": "African-American",
+
+      "wealth_source": "Marriage - 4th wife to tech billionaire Richard Kellerman (68)",
+      "background": "Lower-middle class Detroit, worked as pharmaceutical sales rep",
+      "marriage_timeline": "Met Richard 5 years ago, married 3 years ago",
+
+      "personality_profile": {
+        "core_traits": ["Ambitious", "Pragmatic", "Insecure about acceptance", "Fiercely protective"],
+        "social_challenges": "Old money wives exclude her, feels like outsider",
+        "strengths": "Excellent at reading people, natural networking ability",
+        "defense_mechanisms": "Over-spends to prove belonging, works twice as hard socially"
+      },
+
+      "marriage_dynamics": {
+        "relationship_reality": "Transactional but growing genuine affection",
+        "prenup_status": "Strict prenup, gets allowance not ownership",
+        "social_position": "Seen as 'new wife' by Richard's circle",
+        "future_security": "Building own reputation to secure position"
+      },
+
+      "current_pressures": {
+        "social_acceptance": "Trying to break into established charity circles",
+        "step_children": "Richard's adult children from previous marriages resent her",
+        "public_scrutiny": "Every outfit and appearance is analyzed",
+        "proving_worthiness": "Constantly demonstrating she belongs in this world"
+      },
+
+      "shopping_psychology": {
+        "motivation": "Uses fashion as armor and status symbol",
+        "brand_strategy": "Chooses recognizable luxury to signal belonging",
+        "spending_patterns": "Sometimes overspends to overcompensate",
+        "insecurity_triggers": "Being ignored by sales staff who don't recognize her"
+      },
+
+      "daily_challenges": {
+        "loneliness": "Husband travels constantly, few genuine friends",
+        "comparison": "Constantly comparing herself to previous wives",
+        "purpose_seeking": "Wants to find meaningful work beyond charity boards",
+        "family_tension": "Trying to build relationship with step-children"
+      },
+
+      "key_quotes": [
+        "I earned my place here just like everyone else, just differently.",
+        "Some of these charity wives have never worked a day - I built a career before I met Richard.",
+        "Every outfit is a statement. I can't afford to look anything less than perfect."
+      ],
+
+      "character_bible": {
+        "visual_dna": {
+          "physical_build": "5'8\", stunning figure maintained through personal trainer and strict diet regimen",
+          "face_shape": "Beautiful oval face with high cheekbones and strong jawline, naturally striking features",
+          "hair": "Professionally maintained shoulder-length hair with subtle highlights, always perfectly styled",
+          "eyes": "Intelligent dark brown eyes that show both vulnerability and determination",
+          "skin": "Rich, flawless complexion with professional makeup that enhances natural beauty",
+          "style_aesthetic": "Polished perfection - recognizable luxury pieces styled impeccably",
+          "distinctive_features": [
+            "Commanding presence that fills a room",
+            "Perfect posture from sales training and confidence building",
+            "Strategic smile that masks insecurity with warmth",
+            "Manicured perfection in every detail"
+          ]
+        },
+
+        "signature_elements": [
+          "Statement jewelry that signals wealth (Cartier, Van Cleef)",
+          "Recognizable luxury handbags (Hermès Birkin, Chanel Classic)",
+          "Designer pieces in bold colors that photograph well",
+          "Perfect manicure in signature colors",
+          "High-end sunglasses (Chanel, Tom Ford)",
+          "Professional blowout hairstyle",
+          "Luxury shoes that add height and confidence",
+          "Makeup that's camera-ready at all times"
+        ],
+
+        "setting": {
+          "primary_location": "Beverly Hills mansion living room with marble and gold accents",
+          "secondary_locations": ["Charity event ballroom", "High-end Beverly Hills boutique"],
+          "lighting_style": "Professional lighting that flatters, golden warm tones",
+          "camera_angles": "Slightly below eye level to emphasize confidence and stature",
+          "background_elements": [
+            "Marble surfaces and gold fixtures showing wealth",
+            "Fresh white orchids and roses in crystal vases",
+            "Coffee table books on fashion and interior design",
+            "Family photos with Richard in silver frames",
+            "Luxury shopping bags from recent purchases",
+            "Art collection that signals cultural sophistication"
+          ],
+          "color_palette": "Cream, gold, deep navy, with pops of burgundy and emerald",
+          "mood_atmosphere": "Polished perfection, confident determination, slight defensive energy"
+        },
+
+        "video_mannerisms": {
+          "speaking_style": "Articulate and polished, Detroit accent softened but authentic, uses business language from sales background",
+          "delivery_pace": "Confident and measured, trained from years of presentations",
+          "facial_expressions": "Strategic smile, eyes that show intelligence, slight defensive posture when discussing acceptance",
+          "body_language": "Perfect posture, confident gestures, touches jewelry when making points about belonging",
+          "eye_contact": "Direct and challenging, shows she won't be dismissed",
+          "voice_tone": "Warm but strong, slight edge when defending her position, genuine passion when discussing work"
+        },
+
+        "consistency_anchors": [
+          "38-year-old African-American woman with commanding presence",
+          "Shoulder-length professionally styled hair with highlights",
+          "Intelligent dark brown eyes with determination",
+          "Beautiful oval face with high cheekbones",
+          "Recognizable luxury pieces in bold colors",
+          "Statement jewelry and perfect manicure",
+          "Beverly Hills mansion setting with marble and gold"
+        ],
+
+        "gemini_image_prompt": "Professional portrait photograph of Tiffany Morrison-Kellerman, a 38-year-old African-American woman with stunning natural beauty and commanding presence. She has shoulder-length hair with subtle caramel highlights professionally styled in a polished blowout, and intelligent dark brown eyes that convey both determination and vulnerability. Beautiful oval face with high cheekbones and strong jawline, flawless rich complexion with professional makeup enhancing natural beauty.\n\nWearing a bold emerald green designer blazer with statement gold jewelry including Cartier watch and Van Cleef necklace. Her style represents polished perfection with recognizable luxury pieces. Perfect manicure and professional styling show attention to every detail.\n\nSetting: Elegant Beverly Hills mansion living room with marble surfaces, gold fixtures, fresh white orchids in crystal vases, and coffee table books on fashion. Luxurious but welcoming atmosphere showing both wealth and warmth.\n\nPhotography style: High-end lifestyle portrait, professional lighting with golden warm tones, 85mm lens, polished perfection aesthetic. Camera angle slightly below eye level to emphasize confidence and stature, medium shot showing perfect posture and commanding presence.\n\nTechnical specs: Photorealistic, professional beauty lighting, rich colors, emphasizing natural beauty enhanced by luxury styling, camera-ready perfection.",
+
+        "veo3_delivery_characteristics": {
+          "speaking_pace": "Confident and measured, trained from years of sales presentations",
+          "facial_expressions": "Strategic smile, intelligent eyes, slight defensive energy when discussing belonging",
+          "hand_gestures": "Confident gestures, touches statement jewelry when making points",
+          "voice_tone": "Warm but strong, slight edge when defending position, genuine passion for achievement",
+          "posture": "Perfect throughout, commanding presence, won't be dismissed"
+        }
+      }
+    },
+
+    {
+      "name": "Dr. Priya Mehta",
+      "avatar_emoji": "🩺",
+      "persona_type": "High-Earning Professional - Self-Made",
+      "age": 41,
+      "net_worth": "$12M",
+      "annual_spend_fashion": "$85K",
+      "intelligence_level": "Extremely High - Harvard Medical + Business dual degree",
+      "location": "Upper West Side, Manhattan, NY",
+      "secondary_residences": ["None - reinvests in medical practice and real estate"],
+      "ethnicity": "Indian-American",
+
+      "wealth_source": "Medical practice - successful plastic surgeon",
+      "family_background": "First-generation immigrant parents, father was cab driver",
+      "career_path": "Medical school → Residency → Private practice → Medical entrepreneur",
+
+      "personality_profile": {
+        "core_traits": ["Perfectionist", "Time-conscious", "Achievement-oriented", "Value-driven"],
+        "work_ethic": "Intense - built everything from scratch",
+        "social_mobility": "Conscious of journey from working class to wealth",
+        "pressure_points": "Never wants to appear flashy or wasteful"
+      },
+
+      "current_life_complexity": {
+        "career_demands": "Running medical practice + building medical device startup",
+        "family_obligations": "Single mother to 12-year-old daughter Anya",
+        "time_constraints": "12-hour days, weekend call schedules",
+        "social_navigation": "New to luxury market, learning appropriate behaviors"
+      },
+
+      "shopping_approach": {
+        "efficiency_focus": "Wants high-quality pieces that save time",
+        "value_consciousness": "Comfortable spending on quality but hates waste",
+        "professional_needs": "Wardrobe must work for surgery, consultations, conferences",
+        "learning_curve": "Still developing luxury brand knowledge"
+      },
+
+      "financial_philosophy": {
+        "investment_mindset": "Every purchase must justify itself",
+        "generational_thinking": "Building wealth for daughter's future",
+        "guilt_patterns": "Sometimes feels guilty about luxury when family sacrificed",
+        "pragmatic_luxury": "Wants nice things but they must be functional"
+      },
+
+      "key_quotes": [
+        "I work 70 hours a week - my clothes need to work as hard as I do.",
+        "Coming from nothing, every dollar spent has to count. But I've earned the right to nice things.",
+        "I want to look successful and professional, not flashy. There's a difference."
+      ],
+
+      "character_bible": {
+        "visual_dna": {
+          "physical_build": "5'5\", petite but strong build, excellent posture from years of surgery",
+          "face_shape": "Intelligent oval face with sharp features showing focus and determination",
+          "hair": "Neat shoulder-length black hair, often pulled back for practicality, naturally glossy",
+          "eyes": "Intense dark brown eyes that show both compassion and surgical precision",
+          "skin": "Warm olive complexion, minimal makeup but always polished and professional",
+          "style_aesthetic": "Sophisticated professional - quality pieces that work across medical and business contexts",
+          "distinctive_features": [
+            "Surgeon's precise hand movements and steady demeanor",
+            "Intelligent eyes that assess and analyze quickly",
+            "Professional bearing developed through medical training",
+            "Understated elegance that commands respect"
+          ]
+        },
+
+        "signature_elements": [
+          "Professional blazers that work for consultations and conferences",
+          "Quality blouses that transition from surgery to business meetings",
+          "Conservative jewelry (small diamond studs, simple gold watch)",
+          "Professional but stylish medical scrubs",
+          "Comfortable yet elegant shoes for long surgery days",
+          "Quality leather handbag that holds medical essentials",
+          "Neutral color palette: navy, black, cream, burgundy",
+          "Minimal but expensive accessories that signal success without flash"
+        ],
+
+        "setting": {
+          "primary_location": "Modern medical office with diplomas, awards, and medical equipment visible",
+          "secondary_locations": ["Hospital consultation room", "Upper West Side apartment home office"],
+          "lighting_style": "Clean professional lighting, bright and efficient",
+          "camera_angles": "Eye level to convey professional equality and expertise",
+          "background_elements": [
+            "Medical diplomas and awards on walls",
+            "Medical journals and business books",
+            "Fresh flowers in simple vase",
+            "Photo of daughter Anya on desk",
+            "Medical equipment showing surgical precision",
+            "Organized, efficient workspace reflecting time consciousness"
+          ],
+          "color_palette": "Clean whites, professional blues, warm wood tones",
+          "mood_atmosphere": "Professional competence, focused efficiency, understated success"
+        },
+
+        "video_mannerisms": {
+          "speaking_style": "Precise and articulate, medical vocabulary mixed with business terms, speaks with earned authority",
+          "delivery_pace": "Efficient and focused, respects time constraints, gets to the point",
+          "facial_expressions": "Intelligent focus, compassionate when discussing patient care, determined when discussing goals",
+          "body_language": "Excellent posture, precise hand movements, touches watch when discussing time management",
+          "eye_contact": "Direct and professional, shows confidence earned through achievement",
+          "voice_tone": "Warm but authoritative, slight accent softened by education, genuine passion for medicine"
+        },
+
+        "consistency_anchors": [
+          "41-year-old Indian-American woman with surgical precision",
+          "Neat shoulder-length black hair, often pulled back",
+          "Intense dark brown eyes with professional focus",
+          "Intelligent oval face with determined expression",
+          "Professional blazer in navy or black",
+          "Conservative jewelry and simple gold watch",
+          "Modern medical office setting with diplomas"
+        ],
+
+        "gemini_image_prompt": "Professional portrait photograph of Dr. Priya Mehta, a 41-year-old Indian-American woman with intelligent, focused features and surgical precision. She has neat shoulder-length black hair pulled back professionally, and intense dark brown eyes that convey both compassion and medical expertise. Intelligent oval face with sharp, determined features and warm olive complexion with minimal but polished makeup.\n\nWearing a professional navy blazer over a crisp white blouse with conservative gold jewelry - small diamond studs and simple gold watch. Her style represents sophisticated professionalism that works across medical and business contexts, showing success without ostentation.\n\nSetting: Modern medical office with medical diplomas and awards visible on walls, medical journals, fresh simple flowers, and a photo of her daughter on the desk. Clean, efficient workspace reflecting focus and time consciousness.\n\nPhotography style: Professional medical portrait, clean bright lighting, 85mm lens, competent and authoritative mood. Camera angle at eye level conveying professional equality and expertise, medium shot showing excellent posture and precise bearing.\n\nTechnical specs: Photorealistic, professional lighting, sharp focus, emphasizing intelligence and competence, minimal makeup showing natural beauty enhanced by success.",
+
+        "veo3_delivery_characteristics": {
+          "speaking_pace": "Efficient and focused, respects time, gets to the point with authority",
+          "facial_expressions": "Intelligent focus, compassionate when discussing medicine, determined about goals",
+          "hand_gestures": "Precise movements reflecting surgical training, touches watch when discussing time",
+          "voice_tone": "Warm but authoritative, educated accent, genuine passion for medicine and achievement",
+          "posture": "Excellent throughout, professional bearing, commands respect through competence"
+        }
+      }
+    },
+
+    {
+      "name": "James Alexander Pemberton III",
+      "avatar_emoji": "🎾",
+      "persona_type": "Old Money Heir - Male Perspective",
+      "age": 34,
+      "net_worth": "$85M",
+      "annual_spend_fashion": "$150K",
+      "intelligence_level": "High - Princeton legacy admission, naturally gifted",
+      "location": "Back Bay, Boston, MA",
+      "secondary_residences": ["Family estate in Bar Harbor, Maine", "Ski house in Stowe, VT"],
+      "ethnicity": "WASP - White Anglo-Saxon Protestant",
+
+      "wealth_source": "5th generation family trust + hedge fund career",
+      "family_background": "Boston Brahmin family, fortune from textile mills and banking",
+      "career_path": "Harvard Business → Goldman Sachs → Family hedge fund",
+
+      "personality_profile": {
+        "core_traits": ["Effortlessly confident", "Understated", "Traditionalist", "Sports-obsessed"],
+        "communication_style": "Casual confidence, never tries too hard",
+        "social_navigation": "Born into networks, takes access for granted",
+        "blind_spots": "Sometimes oblivious to privilege, well-meaning but sheltered"
+      },
+
+      "lifestyle_priorities": {
+        "sports_focus": "Tennis, sailing, skiing - country club athlete",
+        "social_obligations": "Museum boards, alumni committees, charity tennis tournaments",
+        "relationship_status": "Recently engaged to Caroline (also old money)",
+        "family_pressure": "Expected to maintain family reputation and legacy"
+      },
+
+      "fashion_approach": {
+        "style_philosophy": "Quality over flash, timeless over trendy",
+        "brand_loyalty": "Brooks Brothers, Ralph Lauren, Patagonia for casual",
+        "shopping_patterns": "Buys same brands as father and grandfather",
+        "care_level": "Moderate - wants to look appropriate but not obsessed"
+      },
+
+      "male_luxury_perspective": {
+        "practical_focus": "Clothes must perform - tennis, sailing, business",
+        "subtlety_preference": "Wealth should whisper, not shout",
+        "relationship_to_fashion": "Functional luxury, not fashion-forward",
+        "technology_comfort": "Higher than many old money peers"
+      },
+
+      "current_challenges": {
+        "generational_pressure": "Living up to family business legacy",
+        "modern_relevance": "Making old money values relevant today",
+        "philanthropy_evolution": "Updating family foundation for modern causes",
+        "work_life_balance": "Maintaining athletic pursuits while building career"
+      },
+
+      "key_quotes": [
+        "Good clothes should last decades. I still wear blazers from college.",
+        "The best luxury is when nobody can tell you spent money.",
+        "Function first, then form. If it doesn't work for tennis and meetings, I don't need it."
+      ],
+
+      "character_bible": {
+        "visual_dna": {
+          "physical_build": "6'1\", athletic build from tennis and sailing, naturally confident posture",
+          "face_shape": "Classic Anglo features with strong jawline, naturally handsome in understated way",
+          "hair": "Light brown hair with natural highlights from outdoor sports, casually styled",
+          "eyes": "Blue-green eyes that show both intelligence and casual confidence",
+          "skin": "Fair complexion with subtle tan from sailing and tennis, naturally healthy glow",
+          "style_aesthetic": "Effortless WASP elegance - quality classics worn without trying",
+          "distinctive_features": [
+            "Athletic confidence that comes from lifetime sports participation",
+            "Casual hand gestures showing comfort with privilege",
+            "Natural smile that suggests insider knowledge",
+            "Relaxed posture that never needs to prove anything"
+          ]
+        },
+
+        "signature_elements": [
+          "Brooks Brothers blazers and button-down shirts",
+          "Ralph Lauren casual wear and polo shirts",
+          "Patagonia for sailing and outdoor activities",
+          "Classic leather loafers and tennis shoes",
+          "Simple gold watch (family heirloom or Rolex)",
+          "Navy blue or khaki color palette",
+          "Quality wool sweaters and cashmere",
+          "Understated accessories that signal heritage"
+        ],
+
+        "setting": {
+          "primary_location": "Traditional Boston Back Bay brownstone with family portraits",
+          "secondary_locations": ["Country club tennis court", "Sailing yacht", "Harvard Club"],
+          "lighting_style": "Natural New England light, classic and traditional",
+          "camera_angles": "Eye level to convey approachable confidence",
+          "background_elements": [
+            "Family portraits spanning generations",
+            "Tennis trophies and sailing awards",
+            "Leather-bound books and classics",
+            "Traditional furniture passed down through family",
+            "Fresh flowers in simple arrangements",
+            "Sports equipment (tennis rackets, sailing gear) visible"
+          ],
+          "color_palette": "Navy blue, forest green, cream, natural wood tones",
+          "mood_atmosphere": "Casual confidence, traditional comfort, effortless privilege"
+        },
+
+        "video_mannerisms": {
+          "speaking_style": "Casual confidence with prep school diction, never tries too hard, natural storytelling ability",
+          "delivery_pace": "Relaxed and unhurried, comfortable with pauses, no need to impress",
+          "facial_expressions": "Natural smile, relaxed features, occasional boyish grin when discussing sports",
+          "body_language": "Confident but not aggressive, casual gestures, may adjust watch or run hand through hair",
+          "eye_contact": "Direct but friendly, shows comfort with social situations",
+          "voice_tone": "Warm New England accent, casual authority, genuine enthusiasm for sports and tradition"
+        },
+
+        "consistency_anchors": [
+          "34-year-old WASP male with athletic confidence",
+          "Light brown hair with natural highlights from sports",
+          "Blue-green eyes with casual confidence",
+          "Classic Anglo features with strong jawline",
+          "Brooks Brothers blazer or Ralph Lauren polo",
+          "Simple gold watch",
+          "Traditional Boston Back Bay setting"
+        ],
+
+        "gemini_image_prompt": "Professional portrait photograph of James Alexander Pemberton III, a 34-year-old WASP male with classic Anglo features and athletic confidence. He has light brown hair with natural highlights from outdoor sports, casually styled, and blue-green eyes that convey both intelligence and effortless confidence. Classic strong jawline and fair complexion with subtle tan from tennis and sailing, naturally healthy glow.\n\nWearing a navy Brooks Brothers blazer over a crisp white button-down shirt with a simple gold watch (family heirloom). His style represents effortless WASP elegance - quality classics worn without trying, understated luxury that whispers rather than shouts.\n\nSetting: Traditional Boston Back Bay brownstone with family portraits on walls, tennis trophies, leather-bound books, and traditional furniture. Natural New England light creates classic, comfortable atmosphere.\n\nPhotography style: Classic American portrait, natural lighting, 85mm lens, traditional and timeless aesthetic. Camera angle at eye level conveying approachable confidence, medium shot showing relaxed confident posture and athletic bearing.\n\nTechnical specs: Photorealistic, natural lighting, emphasizing classic American good looks and effortless privilege, authentic WASP aesthetic.",
+
+        "veo3_delivery_characteristics": {
+          "speaking_pace": "Relaxed and unhurried, comfortable with pauses, no need to impress",
+          "facial_expressions": "Natural smile, relaxed features, boyish grin when discussing sports",
+          "hand_gestures": "Confident but casual, may adjust watch or run hand through hair",
+          "voice_tone": "Warm New England accent, casual authority, genuine enthusiasm for tradition",
+          "posture": "Confident but not aggressive, athletic bearing, natural ease"
+        }
+      }
+    },
+
+    {
+      "name": "Luna Zhao-Williams",
+      "avatar_emoji": "🌸",
+      "persona_type": "Digital Native Luxury - Gen Z Influence",
+      "age": 24,
+      "net_worth": "$15M",
+      "annual_spend_fashion": "$125K",
+      "intelligence_level": "High - NYU business, digital native, culturally sophisticated",
+      "location": "SoHo, New York City",
+      "secondary_residences": ["Parents' place in Shanghai"],
+      "ethnicity": "Chinese-American",
+
+      "wealth_source": "Influencer empire + family support + investments",
+      "family_background": "Mother: fashion executive, Father: investment banker",
+      "career_path": "College influencer → Brand partnerships → Business investments",
+
+      "personality_profile": {
+        "core_traits": ["Authentically confident", "Culturally curious", "Business-minded", "Community-focused"],
+        "digital_nativity": "Born online, understands personal branding intuitively",
+        "cultural_navigation": "Bridges Eastern and Western luxury markets",
+        "authenticity_focus": "Rejects fake luxury culture, promotes genuine appreciation"
+      },
+
+      "influencer_reality": {
+        "platform_focus": "Instagram, TikTok, but selective about partnerships",
+        "audience_size": "500K highly engaged followers",
+        "content_approach": "Education about luxury heritage, not just showing off",
+        "brand_relationships": "Works with brands she genuinely uses and loves"
+      },
+
+      "luxury_philosophy": {
+        "education_focus": "Wants to understand craft and heritage behind brands",
+        "sustainability_consciousness": "Prefers brands with ethical practices",
+        "investment_thinking": "Buys pieces that hold value and meaning",
+        "cultural_bridge": "Introduces Western followers to Asian luxury brands"
+      },
+
+      "current_life_phase": {
+        "business_building": "Launching luxury education platform",
+        "relationship_status": "Dating fellow entrepreneur, very private about it",
+        "family_dynamics": "Close with parents, shares cultural values",
+        "future_planning": "Building business empire, not just social media presence"
+      },
+
+      "shopping_behavior": {
+        "research_intensive": "Deep dives into brand history and craftsmanship",
+        "documentation_focused": "Everything photographed for content but thoughtfully",
+        "community_sharing": "Shares knowledge with followers, creates educational content",
+        "quality_obsessed": "Would rather have fewer, better pieces"
+      },
+
+      "key_quotes": [
+        "Luxury isn't about showing off - it's about appreciating incredible craftsmanship and heritage.",
+        "My generation wants to understand the story behind every piece we buy.",
+        "I'd rather explain why a piece is special than just show the logo."
+      ],
+
+      "character_bible": {
+        "visual_dna": {
+          "physical_build": "5'4\", petite with youthful energy, maintains fitness through dance and yoga",
+          "face_shape": "Heart-shaped face with delicate features, naturally photogenic",
+          "hair": "Long silky black hair, often styled in trendy but sophisticated ways",
+          "eyes": "Bright dark brown eyes that show intelligence and curiosity",
+          "skin": "Flawless porcelain complexion with natural glow, minimal makeup",
+          "style_aesthetic": "Modern luxury with cultural fusion - East meets West sophistication",
+          "distinctive_features": [
+            "Gen Z confidence mixed with genuine sophistication",
+            "Natural ability to pose and move for cameras",
+            "Expressive hands when explaining concepts",
+            "Authentic smile that engages audiences"
+          ]
+        },
+
+        "signature_elements": [
+          "Mix of Asian and Western luxury brands",
+          "Contemporary jewelry with cultural significance",
+          "Trending colors but in luxury fabrics",
+          "Designer pieces styled in unexpected ways",
+          "Cultural accessories (jade jewelry, silk scarves)",
+          "High-quality basics mixed with statement pieces",
+          "Sustainable luxury brands when possible",
+          "Perfect for photographing but wearable"
+        ],
+
+        "setting": {
+          "primary_location": "Modern SoHo loft with ring lighting and content creation setup",
+          "secondary_locations": ["Trendy SoHo cafe", "Gallery opening", "Parents' Shanghai home"],
+          "lighting_style": "Perfect for content - ring lighting mixed with natural light",
+          "camera_angles": "Slightly above eye level, optimized for social media",
+          "background_elements": [
+            "Professional content creation setup",
+            "Books on fashion history and business",
+            "Fresh flowers and plants for content",
+            "Cultural art mixing Eastern and Western pieces",
+            "Organized luxury pieces for content planning",
+            "Technology for content creation visible"
+          ],
+          "color_palette": "Soft pastels, cream, sage green with pops of blush pink",
+          "mood_atmosphere": "Creative energy, cultural sophistication, authentic luxury education"
+        },
+
+        "video_mannerisms": {
+          "speaking_style": "Articulate and passionate, uses cultural references naturally, educates while entertaining",
+          "delivery_pace": "Energetic but thoughtful, natural rhythm for social media",
+          "facial_expressions": "Expressive and engaging, genuine excitement when discussing craftsmanship",
+          "body_language": "Natural for cameras, uses hands to illustrate points, touches pieces when explaining heritage",
+          "eye_contact": "Direct camera engagement, understands audience connection",
+          "voice_tone": "Warm and educational, slight accent adding authenticity, genuine passion for luxury heritage"
+        },
+
+        "consistency_anchors": [
+          "24-year-old Chinese-American woman with Gen Z sophistication",
+          "Long silky black hair styled trendy but elegant",
+          "Bright dark brown eyes with curious intelligence",
+          "Heart-shaped face with delicate features",
+          "Modern luxury mixing Eastern and Western styles",
+          "Cultural jewelry and contemporary accessories",
+          "SoHo loft with content creation setup"
+        ],
+
+        "gemini_image_prompt": "Professional portrait photograph of Luna Zhao-Williams, a 24-year-old Chinese-American woman with Gen Z sophistication and natural content creation presence. She has long silky black hair styled in modern waves, and bright dark brown eyes that show intelligence and curiosity. Heart-shaped face with delicate features and flawless porcelain complexion with natural glow, minimal but perfect makeup.\n\nWearing a contemporary cream blazer over a silk camisole with modern jewelry mixing cultural and Western elements - jade bracelet, contemporary gold earrings. Her style represents modern luxury with cultural fusion, sophisticated but accessible to younger audiences.\n\nSetting: Modern SoHo loft with professional ring lighting setup, books on fashion history, fresh flowers, and cultural art mixing Eastern and Western pieces. Perfect lighting for content creation with creative, sophisticated atmosphere.\n\nPhotography style: Contemporary influencer portrait optimized for social media, perfect lighting setup, 50mm lens, engaging and educational mood. Camera angle slightly above eye level, medium shot showing natural content creation posture and cultural sophistication.\n\nTechnical specs: Photorealistic, professional content lighting, vibrant but natural colors, emphasizing Gen Z authenticity mixed with luxury sophistication.",
+
+        "veo3_delivery_characteristics": {
+          "speaking_pace": "Energetic but thoughtful, natural rhythm for social media education",
+          "facial_expressions": "Expressive and engaging, genuine excitement when discussing heritage",
+          "hand_gestures": "Natural for cameras, uses hands to illustrate points about craftsmanship",
+          "voice_tone": "Warm and educational, authentic accent, genuine passion for luxury heritage",
+          "posture": "Natural for content creation, confident cultural bridge-building"
+        }
+      }
+    },
+
+    {
+      "name": "Victoria Blackstone-Morrison",
+      "avatar_emoji": "🖤",
+      "persona_type": "Divorce Settlement Wealth - Rebuilding Identity",
+      "age": 47,
+      "net_worth": "$95M",
+      "annual_spend_fashion": "$250K",
+      "intelligence_level": "High - Georgetown Law, sharp legal mind",
+      "location": "Georgetown, Washington DC",
+      "secondary_residences": ["Recently acquired Hamptons house", "Aspen condo"],
+      "ethnicity": "Caucasian",
+
+      "wealth_source": "Divorce settlement from tech mogul ex-husband",
+      "background": "Gave up legal career for marriage, now rebuilding independence",
+      "current_status": "18 months post-divorce, redefining herself",
+
+      "personality_profile": {
+        "core_traits": ["Resilient", "Guarded", "Determined", "Rediscovering confidence"],
+        "emotional_state": "Cautiously optimistic, protective of new independence",
+        "social_challenges": "Some old friends chose ex-husband's side",
+        "strength_building": "Learning to make decisions without consulting anyone"
+      },
+
+      "post_divorce_reality": {
+        "financial_freedom": "First time controlling her own money in 20 years",
+        "social_navigation": "Rebuilding social circle as single woman",
+        "identity_work": "Rediscovering who she is outside of marriage",
+        "parenting_solo": "Co-parenting two teenagers with difficult ex"
+      },
+
+      "shopping_psychology": {
+        "empowerment_through_fashion": "Uses style to rebuild confidence",
+        "independence_assertion": "Makes choices without considering ex's opinions",
+        "social_armor": "Dresses for strength in social situations",
+        "quality_investment": "Buying pieces that will last through life transitions"
+      },
+
+      "current_challenges": {
+        "social_anxiety": "Walking into events alone for first time in decades",
+        "dating_fears": "Worried about people wanting her for money",
+        "parenting_pressure": "Protecting children from divorce fallout",
+        "career_decisions": "Considering return to law or new venture"
+      },
+
+      "growth_areas": {
+        "financial_literacy": "Learning to manage substantial assets",
+        "personal_style": "Developing individual taste after years of compromise",
+        "social_confidence": "Building comfort with solo social appearances",
+        "future_planning": "Creating vision for next life chapter"
+      },
+
+      "key_quotes": [
+        "For the first time in twenty years, I'm buying clothes that make ME happy.",
+        "I'm learning to trust my own taste and judgment again.",
+        "This is my fresh start. Every choice I make is mine alone."
+      ],
+
+      "character_bible": {
+        "visual_dna": {
+          "physical_build": "5'7\", elegant build maintained through barre classes and personal training",
+          "face_shape": "Sophisticated oval face with strong features showing both vulnerability and determination",
+          "hair": "Shoulder-length dark brown hair with subtle highlights, recently updated style",
+          "eyes": "Intelligent hazel eyes that show both wariness and growing confidence",
+          "skin": "Fair complexion with natural aging, well-maintained but not overly perfected",
+          "style_aesthetic": "Sophisticated independence - quality pieces that reflect personal choice",
+          "distinctive_features": [
+            "Posture that's rebuilding confidence",
+            "Subtle defensive body language softening into openness",
+            "Genuine smile when discussing personal growth",
+            "Hands that gesture with growing freedom"
+          ]
+        },
+
+        "signature_elements": [
+          "Quality blazers in colors she chooses (not ex's preferences)",
+          "Statement jewelry that reflects personal taste",
+          "Elegant dresses for solo social appearances",
+          "Comfortable but luxurious casual wear",
+          "Shoes that make her feel confident and tall",
+          "Handbags that represent independence",
+          "Colors that make her happy (no longer restricted)",
+          "Pieces that work for multiple life contexts"
+        ],
+
+        "setting": {
+          "primary_location": "Georgetown townhouse home office with legal books and personal touches",
+          "secondary_locations": ["Upscale DC restaurant", "Recently decorated Hamptons house"],
+          "lighting_style": "Warm, welcoming light that shows both strength and vulnerability",
+          "camera_angles": "Eye level to show emerging confidence and dignity",
+          "background_elements": [
+            "Legal books and diplomas showing past career",
+            "Photos of children but not ex-husband",
+            "Fresh flowers she chose herself",
+            "Art and decorations reflecting personal taste",
+            "Financial documents showing independence",
+            "Books on personal growth and new ventures"
+          ],
+          "color_palette": "Rich jewel tones, deep navy, emerald, burgundy with gold accents",
+          "mood_atmosphere": "Rebuilding confidence, cautious optimism, emerging independence"
+        },
+
+        "video_mannerisms": {
+          "speaking_style": "Thoughtful and measured, legal precision mixed with personal vulnerability",
+          "delivery_pace": "Careful but growing stronger, pauses to consider personal truth",
+          "facial_expressions": "Cautious smile growing more genuine, eyes that show both pain and hope",
+          "body_language": "Posture rebuilding confidence, touches jewelry when discussing independence",
+          "eye_contact": "Direct but protective, showing strength while maintaining boundaries",
+          "voice_tone": "Warm but guarded, legal authority mixed with personal rediscovery"
+        },
+
+        "consistency_anchors": [
+          "47-year-old Caucasian woman rebuilding confidence post-divorce",
+          "Shoulder-length dark brown hair with updated styling",
+          "Intelligent hazel eyes showing vulnerability and determination",
+          "Sophisticated oval face with strong legal bearing",
+          "Quality clothing in colors that reflect personal choice",
+          "Statement jewelry representing independence",
+          "Georgetown townhouse with legal and personal elements"
+        ],
+
+        "gemini_image_prompt": "Professional portrait photograph of Victoria Blackstone-Morrison, a 47-year-old Caucasian woman with sophisticated features showing both vulnerability and emerging strength. She has shoulder-length dark brown hair with subtle highlights in a recently updated style, and intelligent hazel eyes that convey cautious optimism. Sophisticated oval face with strong features showing legal authority mixed with personal rediscovery.\n\nWearing a rich emerald green blazer with statement gold jewelry that reflects her personal taste - pieces chosen for herself, not to please others. Her style represents sophisticated independence and quality choices that work across multiple life contexts.\n\nSetting: Georgetown townhouse home office with legal books, fresh flowers she chose herself, and personal art reflecting her individual taste. Warm lighting creates atmosphere of both strength and vulnerability.\n\nPhotography style: Sophisticated portrait showing personal growth, warm professional lighting, 85mm lens, emerging confidence aesthetic. Camera angle at eye level conveying dignity and rebuilding self-assurance, medium shot showing elegant but protective posture.\n\nTechnical specs: Photorealistic, warm natural lighting, rich colors, emphasizing both strength and vulnerability, natural aging with confidence.",
+
+        "veo3_delivery_characteristics": {
+          "speaking_pace": "Careful but growing stronger, thoughtful pauses for personal truth",
+          "facial_expressions": "Cautious smile growing genuine, eyes showing both pain and hope",
+          "hand_gestures": "Touches jewelry when discussing independence, gestures growing freer",
+          "voice_tone": "Warm but guarded, legal authority mixed with personal rediscovery",
+          "posture": "Rebuilding confidence, protective but opening up"
+        }
+      }
+    },
+
+    {
+      "name": "Alexander Chen-Nakamura",
+      "avatar_emoji": "💼",
+      "persona_type": "Private Equity Success - International Wealth",
+      "age": 39,
+      "net_worth": "$180M",
+      "annual_spend_fashion": "$200K",
+      "intelligence_level": "Extremely High - Wharton MBA, strategic financial mind",
+      "location": "Tribeca, New York City",
+      "secondary_residences": ["Tokyo penthouse", "London flat", "Malibu beach house"],
+      "ethnicity": "Mixed Asian - Chinese-Japanese heritage",
+
+      "wealth_source": "Private equity success + crypto investments + real estate",
+      "family_background": "Upper-middle class academics, self-made wealth",
+      "career_path": "Investment banking → Private equity → Personal fund",
+
+      "personality_profile": {
+        "core_traits": ["Analytically precise", "Globally minded", "Quality-obsessed", "Time-efficient"],
+        "communication_style": "Direct, data-driven, internationally sophisticated",
+        "cultural_navigation": "Equally comfortable in Tokyo, London, New York",
+        "luxury_philosophy": "Pays for quality and service, not status"
+      },
+
+      "international_lifestyle": {
+        "travel_frequency": "200+ days per year across Asia, Europe, Americas",
+        "cultural_fluency": "Speaks Mandarin, Japanese, English fluently",
+        "business_networks": "Deep relationships across global financial centers",
+        "style_adaptation": "Adjusts wardrobe for different cultural contexts"
+      },
+
+      "fashion_approach": {
+        "global_perspective": "Sources best from each region - Japanese tailoring, Italian leather",
+        "efficiency_focus": "Needs versatile pieces for multiple time zones",
+        "quality_standards": "Extremely high - clothes must perform across climates/cultures",
+        "brand_relationships": "Personal relationships with tailors in multiple cities"
+      },
+
+      "current_life_focus": {
+        "business_expansion": "Building Asia-focused investment fund",
+        "relationship_status": "Recently engaged to investment banker Sarah (also high-earning)",
+        "family_planning": "Considering where to raise future children",
+        "philanthropic_interests": "Education access in developing Asian markets"
+      },
+
+      "male_luxury_perspective": {
+        "functionality_first": "Every piece must work across business contexts",
+        "craftsmanship_appreciation": "Understands quality from global perspective",
+        "efficiency_obsession": "Clothes must pack well, travel well, perform well",
+        "cultural_sensitivity": "Adapts style appropriately for different markets"
+      },
+
+      "key_quotes": [
+        "I need clothes that work whether I'm in a Tokyo boardroom or London dinner party.",
+        "Quality is universal - the best craftsmen in each country have different strengths.",
+        "My wardrobe is a global portfolio. Each piece needs to perform across cultures."
+      ],
+
+      "character_bible": {
+        "visual_dna": {
+          "physical_build": "5'10\", lean athletic build maintained through hotel gyms and efficient workouts",
+          "face_shape": "Refined Asian features with strong jawline, internationally sophisticated",
+          "hair": "Neat black hair, professionally styled for global business contexts",
+          "eyes": "Intelligent dark brown eyes that show analytical precision and global awareness",
+          "skin": "Healthy complexion from good genetics and quality skincare",
+          "style_aesthetic": "Global luxury - best quality from each culture, understated sophistication",
+          "distinctive_features": [
+            "Precise movements reflecting analytical mind",
+            "International bearing comfortable across cultures",
+            "Quality-conscious selection of every detail",
+            "Confident posture of global business success"
+          ]
+        },
+
+        "signature_elements": [
+          "Japanese-tailored suits for precision fit",
+          "Italian leather goods for quality and craftsmanship",
+          "Swiss watches for reliability and prestige",
+          "High-quality basics that travel well",
+          "Cultural-appropriate accessories for different markets",
+          "Premium luggage for constant travel",
+          "Neutral colors that work globally",
+          "Technology accessories for global connectivity"
+        ],
+
+        "setting": {
+          "primary_location": "Modern Tribeca penthouse with global art collection and city views",
+          "secondary_locations": ["Private jet cabin", "Tokyo conference room", "London financial district"],
+          "lighting_style": "Clean modern lighting, efficient and professional",
+          "camera_angles": "Eye level conveying global business authority",
+          "background_elements": [
+            "Global art collection from different cultures",
+            "Multiple time zone clocks",
+            "High-end technology for global communication",
+            "Books in multiple languages",
+            "Quality luggage ready for travel",
+            "Minimalist but expensive furnishings"
+          ],
+          "color_palette": "Sophisticated grays, deep navy, black with metallic accents",
+          "mood_atmosphere": "Global sophistication, analytical precision, understated luxury"
+        },
+
+        "video_mannerisms": {
+          "speaking_style": "Precise and data-driven, comfortable with international business language",
+          "delivery_pace": "Efficient and focused, respects global time constraints",
+          "facial_expressions": "Analytical focus, slight smile when discussing quality or efficiency",
+          "body_language": "Precise gestures, checks watch when discussing time zones, confident international bearing",
+          "eye_contact": "Direct and professional, shows global business confidence",
+          "voice_tone": "Internationally educated accent, analytical authority, genuine appreciation for global craftsmanship"
+        },
+
+        "consistency_anchors": [
+          "39-year-old mixed Chinese-Japanese man with global sophistication",
+          "Neat black hair professionally styled",
+          "Intelligent dark brown eyes with analytical precision",
+          "Refined Asian features with international bearing",
+          "High-quality tailored suit (Japanese or European)",
+          "Swiss watch and quality accessories",
+          "Modern Tribeca penthouse with global elements"
+        ],
+
+        "gemini_image_prompt": "Professional portrait photograph of Alexander Chen-Nakamura, a 39-year-old man of mixed Chinese-Japanese heritage with global business sophistication. He has neat black hair professionally styled, and intelligent dark brown eyes that convey analytical precision and international awareness. Refined Asian features with strong jawline and healthy complexion showing success and global travel.\n\nWearing a perfectly tailored charcoal suit (Japanese craftsmanship) with a crisp white shirt and understated luxury accessories - Swiss watch, quality cufflinks. His style represents global luxury sourcing the best from each culture, understated sophistication that works across continents.\n\nSetting: Modern Tribeca penthouse with global art collection, multiple time zone clocks, and city views. Clean modern lighting emphasizing efficiency and international success.\n\nPhotography style: Global business portrait, clean professional lighting, 85mm lens, international sophistication aesthetic. Camera angle at eye level conveying global authority, medium shot showing confident international bearing and analytical precision.\n\nTechnical specs: Photorealistic, professional business lighting, sharp focus, emphasizing global sophistication and analytical success.",
+
+        "veo3_delivery_characteristics": {
+          "speaking_pace": "Efficient and focused, respects global time constraints and cultural contexts",
+          "facial_expressions": "Analytical focus, appreciation when discussing quality and global craftsmanship",
+          "hand_gestures": "Precise movements, checks watch for time zones, confident international gestures",
+          "voice_tone": "Internationally educated, analytical authority, genuine appreciation for global excellence",
+          "posture": "Confident international bearing, comfortable across cultures"
+        }
+      }
+    }
+  ]
+}
