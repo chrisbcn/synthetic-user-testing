@@ -648,8 +648,9 @@ export function InterviewRunner({ onSectionChange, onInterviewCompleted }: Inter
       timestamp: new Date(),
     }
 
-    setConversation([initialTurn])
-    await sendMessage(firstQuestion, [])
+    const initialConversation = [initialTurn]
+    setConversation(initialConversation)
+    await sendMessage(firstQuestion, initialConversation)
   }
 
   const sendMessage = async (message: string, currentConversation: ConversationTurn[] = conversation) => {

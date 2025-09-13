@@ -104,13 +104,14 @@ export function MainDashboard({ onSelectProject }: MainDashboardProps) {
         </CardHeader>
         <CardContent>
           <p className="text-blue-800 leading-relaxed text-sm">
-            Hello there! Your dashboard shows we're on a roll with {mockDashboardData.completedInterviews} new leads
-            this week. We've got 325 leads in the pipeline, and the AI insights are highlighting some great
-            opportunities.
+            Your synthetic user testing dashboard shows great progress with {mockDashboardData.completedInterviews}{" "}
+            completed interviews this week. We've got {mockDashboardData.activeInterviews} active interviews running,
+            and the AI insights are highlighting some valuable user behavior patterns.
           </p>
           <p className="text-blue-800 leading-relaxed text-sm mt-2">
-            Right at the top, you've got your most important to-dos, including following up with Jennifer and prepping
-            for today's strategic partnership meeting. It's all about moving those key deals forward.
+            Key priorities include reviewing the latest interview results from the luxury fashion study and generating
+            video summaries for stakeholder presentations. The personas are providing rich insights into user
+            preferences and pain points.
           </p>
         </CardContent>
       </Card>
@@ -121,12 +122,12 @@ export function MainDashboard({ onSelectProject }: MainDashboardProps) {
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <p className="text-sm font-medium text-gray-600">New Leads This Week</p>
+                <p className="text-sm font-medium text-gray-600">Interviews This Week</p>
                 <div className="flex items-baseline gap-2">
-                  <p className="text-3xl font-bold text-gray-900">249</p>
+                  <p className="text-3xl font-bold text-gray-900">{mockDashboardData.activeInterviews}</p>
                   <div className="flex items-center text-green-600 text-sm">
                     <TrendingUp className="w-3 h-3 mr-1" />
-                    7%
+                    15%
                   </div>
                 </div>
                 <p className="text-xs text-gray-500">from last week</p>
@@ -134,19 +135,19 @@ export function MainDashboard({ onSelectProject }: MainDashboardProps) {
             </div>
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Website</span>
-                <span className="font-medium">119</span>
-                <span className="text-gray-500">48%</span>
+                <span className="text-gray-600">Completed</span>
+                <span className="font-medium">{mockDashboardData.completedInterviews}</span>
+                <span className="text-gray-500">88%</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Referral</span>
-                <span className="font-medium">50</span>
-                <span className="text-gray-500">20%</span>
+                <span className="text-gray-600">In Progress</span>
+                <span className="font-medium">{mockDashboardData.activeInterviews}</span>
+                <span className="text-gray-500">12%</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">LinkedIn</span>
-                <span className="font-medium">37</span>
-                <span className="text-gray-500">15%</span>
+                <span className="text-gray-600">Videos Generated</span>
+                <span className="font-medium">{mockDashboardData.videosGenerated}</span>
+                <span className="text-gray-500">38%</span>
               </div>
             </div>
           </CardContent>
@@ -156,32 +157,32 @@ export function MainDashboard({ onSelectProject }: MainDashboardProps) {
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Leads by Stage</p>
+                <p className="text-sm font-medium text-gray-600">Active Personas</p>
                 <div className="flex items-baseline gap-2">
-                  <p className="text-3xl font-bold text-gray-900">325</p>
+                  <p className="text-3xl font-bold text-gray-900">{mockDashboardData.totalPersonas}</p>
                   <div className="flex items-center text-green-600 text-sm">
                     <TrendingUp className="w-3 h-3 mr-1" />
-                    3%
+                    8%
                   </div>
                 </div>
-                <p className="text-xs text-gray-500">from last month</p>
+                <p className="text-xs text-gray-500">across all projects</p>
               </div>
             </div>
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Initial Consult</span>
-                <span className="font-medium">112</span>
-                <span className="text-gray-500">34%</span>
+                <span className="text-gray-600">Fashion Focused</span>
+                <span className="font-medium">15</span>
+                <span className="text-gray-500">60%</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Proposal</span>
-                <span className="font-medium">65</span>
-                <span className="text-gray-500">20%</span>
+                <span className="text-gray-600">Tech Savvy</span>
+                <span className="font-medium">6</span>
+                <span className="text-gray-500">24%</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Contracting</span>
-                <span className="font-medium">49</span>
-                <span className="text-gray-500">15%</span>
+                <span className="text-gray-600">Price Conscious</span>
+                <span className="font-medium">4</span>
+                <span className="text-gray-500">16%</span>
               </div>
             </div>
           </CardContent>
@@ -191,29 +192,29 @@ export function MainDashboard({ onSelectProject }: MainDashboardProps) {
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <p className="text-sm font-medium text-gray-600">AI Insights</p>
-                <p className="text-3xl font-bold text-gray-900">325</p>
-                <p className="text-xs text-gray-500">62% conversion rate</p>
+                <p className="text-sm font-medium text-gray-600">Key Insights</p>
+                <p className="text-3xl font-bold text-gray-900">{mockDashboardData.totalProjects}</p>
+                <p className="text-xs text-gray-500">active projects</p>
               </div>
             </div>
             <div className="space-y-2">
               <div className="flex items-center text-sm">
                 <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                <span className="text-gray-600">Channel</span>
-                <span className="ml-auto text-gray-900">Start Insights</span>
-                <span className="ml-2 text-gray-600">Action</span>
+                <span className="text-gray-600">Mobile UX</span>
+                <span className="ml-auto text-gray-900">Needs work</span>
+                <span className="ml-2 text-orange-600">Priority</span>
               </div>
               <div className="flex items-center text-sm">
                 <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
-                <span className="text-gray-600">LinkedIn</span>
-                <span className="ml-auto text-gray-900">90% hot leads</span>
-                <span className="ml-2 text-green-600">+ Prioritize message</span>
+                <span className="text-gray-600">Personalization</span>
+                <span className="ml-auto text-gray-900">High demand</span>
+                <span className="ml-2 text-green-600">Implement</span>
               </div>
               <div className="flex items-center text-sm">
-                <div className="w-2 h-2 bg-orange-500 rounded-full mr-2"></div>
-                <span className="text-gray-600">Referrals</span>
-                <span className="ml-auto text-gray-900">40% Convert</span>
-                <span className="ml-2 text-orange-600">+ Ask for more referrals</span>
+                <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
+                <span className="text-gray-600">Price Transparency</span>
+                <span className="ml-auto text-gray-900">Critical</span>
+                <span className="ml-2 text-red-600">Fix ASAP</span>
               </div>
             </div>
           </CardContent>
@@ -231,31 +232,14 @@ export function MainDashboard({ onSelectProject }: MainDashboardProps) {
               <div className="w-4 h-4 border-2 border-gray-300 rounded mt-1"></div>
               <div className="flex-1">
                 <h3 className="font-medium text-gray-900">
-                  Follow up with Jennifer on her proposal to confirm renewal before the contract expires in 5 days.
-                </h3>
-                <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
-                  <div className="flex items-center gap-1">
-                    <div className="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center">
-                      <span className="text-xs">📧</span>
-                    </div>
-                    <span>It's been a minute! How are things with you?</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4 p-4 border rounded-lg hover:bg-gray-50 transition-colors">
-              <div className="w-4 h-4 border-2 border-gray-300 rounded mt-1"></div>
-              <div className="flex-1">
-                <h3 className="font-medium text-gray-900">
-                  Send a congratulations message to Billy Bob and XYZ Adventure Vehicles on retirement announcement.
+                  Review interview results from Sophia Harrington's luxury fashion preferences session
                 </h3>
                 <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
                   <div className="flex items-center gap-1">
                     <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
-                      <span className="text-xs">🏢</span>
+                      <MessageSquare className="w-3 h-3" />
                     </div>
-                    <span>A Fond Farewell: Billy Bob's Retirement from XYZ Adventure Vehicles</span>
+                    <span>45-minute interview completed 2 hours ago</span>
                   </div>
                 </div>
               </div>
@@ -265,9 +249,33 @@ export function MainDashboard({ onSelectProject }: MainDashboardProps) {
               <div className="w-4 h-4 border-2 border-gray-300 rounded mt-1"></div>
               <div className="flex-1">
                 <h3 className="font-medium text-gray-900">
-                  Deliver follow-up demo highlighting premium support features and value to address client's interest in
-                  upgrading.
+                  Generate video summary for stakeholder presentation on mobile UX findings
                 </h3>
+                <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
+                  <div className="flex items-center gap-1">
+                    <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center">
+                      <Video className="w-3 h-3" />
+                    </div>
+                    <span>Ready to generate from 12 completed interviews</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4 p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+              <div className="w-4 h-4 border-2 border-gray-300 rounded mt-1"></div>
+              <div className="flex-1">
+                <h3 className="font-medium text-gray-900">
+                  Update persona profiles based on latest interview insights about price sensitivity
+                </h3>
+                <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
+                  <div className="flex items-center gap-1">
+                    <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
+                      <Users className="w-3 h-3" />
+                    </div>
+                    <span>3 personas need updates</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
