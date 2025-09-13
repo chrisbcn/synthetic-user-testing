@@ -150,8 +150,8 @@ export default function PersonasPage() {
   }
 
   return (
-    <div className="min-h-screen">
-      <div className="container mx-auto">
+    <div className="min-h-screen bg-white">
+      <div className="container mx-auto px-6 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Personas</h1>
           <p className="text-gray-600">Detailed profiles of our synthetic user testing personas</p>
@@ -163,7 +163,7 @@ export default function PersonasPage() {
             const currentIndex = currentImageIndex[persona.name] || 0
 
             return (
-              <Card key={persona.name || index} className="border border-gray-200">
+              <Card key={persona.name || index} className="bg-white border border-gray-200">
                 <CardContent className="p-0">
                   <div className="flex flex-col lg:flex-row">
                     {/* Image Section with Upload and Carousel */}

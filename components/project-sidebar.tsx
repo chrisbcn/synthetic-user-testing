@@ -1,8 +1,8 @@
 "use client"
 
 import type React from "react"
+
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -59,7 +59,6 @@ export function ProjectSidebar({
   onUploadFile,
   onProjectSwitch,
 }: ProjectSidebarProps) {
-  const router = useRouter()
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false)
   const [subProjectsExpanded, setSubProjectsExpanded] = useState(true)
 
@@ -144,10 +143,7 @@ export function ProjectSidebar({
           <h2 className="text-xl font-semibold text-foreground">Maura UX Testing</h2>
           <p className="text-sm text-muted-foreground mt-1">Luxury Fashion Testing</p>
           <Button
-            onClick={() => {
-              console.log("[v0] Navigating to new interview from header button")
-              router.push("/interviews/new")
-            }}
+            onClick={() => onSectionChange("interviews")}
             className="mt-3 bg-primary hover:bg-primary/90 text-primary-foreground font-medium px-4 py-2 rounded-md shadow-sm transition-colors"
           >
             <Plus className="w-4 h-4 mr-2" />
@@ -165,20 +161,11 @@ export function ProjectSidebar({
                 key={section.id}
                 variant={activeSection === section.id ? "secondary" : "ghost"}
                 className={`w-full justify-start h-10 relative hover:bg-[#EDE6DA] ${
-                  activeSection === section.id ? "bg-white text-[#23282a] hover:bg-white/90" : ""
+                  activeSection === section.id
+                    ? "bg-white text-[#23282a] hover:bg-white/90" // keeping active state styling
+                    : ""
                 }`}
-                onClick={() => {
-                  console.log(`[v0] Sidebar section clicked: ${section.id}`)
-                  if (section.id === "interviews") {
-                    console.log("[v0] Navigating to interviews table")
-                    router.push("/interviews")
-                  } else if (section.id === "overview") {
-                    console.log("[v0] Navigating to dashboard")
-                    router.push("/")
-                  } else {
-                    onSectionChange(section.id)
-                  }
-                }}
+                onClick={() => onSectionChange(section.id)}
               >
                 <Icon className="w-4 h-4 mr-3" />
                 <span className="flex-1 text-left">{section.label}</span>
@@ -215,11 +202,7 @@ export function ProjectSidebar({
                 key={subProject.id}
                 variant="ghost"
                 className="w-full justify-start h-8 text-sm text-slate-700 hover:text-slate-900 hover:bg-[#EDE6DA]"
-                onClick={() => {
-                  console.log("[v0] Navigate to sub-project:", subProject.id)
-                  // For now, just change section - could be expanded to actual sub-project routing
-                  onSectionChange(`subproject-${subProject.id}`)
-                }}
+                onClick={() => console.log("Navigate to sub-project:", subProject.id)}
               >
                 <Folder className="w-3 h-3 mr-2" />
                 <span className="flex-1 text-left">{subProject.name}</span>
@@ -245,15 +228,8 @@ export function ProjectSidebar({
                 size="sm"
                 className="w-full justify-start h-8 text-sm hover:bg-[#EDE6DA]"
                 onClick={() => {
-                  console.log(`[v0] Quick action clicked: ${action.id}`)
-                  if (action.id === "new-interview") {
-                    console.log("[v0] Navigating to new interview from quick actions")
-                    router.push("/interviews/new")
-                  }
-                  if (action.id === "export-results") {
-                    console.log("[v0] Exporting results")
-                    alert("Export functionality coming soon!")
-                  }
+                  if (action.id === "new-interview") onSectionChange("interviews")
+                  if (action.id === "export-results") onSectionChange("results")
                 }}
               >
                 <Icon className="w-3 h-3 mr-2" />
@@ -407,14 +383,7 @@ export function ProjectSidebar({
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-medium">Interview Sessions</h3>
-              <Button
-                size="sm"
-                className="bg-accent hover:bg-accent/90"
-                onClick={() => {
-                  console.log("[v0] Navigating to new interview from interviews section")
-                  router.push("/interviews/new")
-                }}
-              >
+              <Button size="sm" className="bg-accent hover:bg-accent/90">
                 <Plus className="w-4 h-4 mr-1" />
                 New
               </Button>

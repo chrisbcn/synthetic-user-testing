@@ -12,7 +12,7 @@ export function Dashboard() {
 
   console.log("[v0] Dashboard rendering, currentProject:", currentProject, "selectedProjectId:", selectedProjectId)
 
-  const showMainDashboard = !selectedProjectId
+  const showMainDashboard = !currentProject && !selectedProjectId
 
   const handleSelectProject = (projectId: string) => {
     console.log("[v0] Selecting project:", projectId)
