@@ -3,15 +3,14 @@
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { ProjectSidebar } from "@/components/project-sidebar"
 import { InterviewRunner } from "@/components/interview-runner"
 import InterviewerManager from "@/components/interviewer-manager"
 import { FileRepository } from "@/components/file-repository"
 import { ResultsAnalytics } from "@/components/results-analytics"
 import { useAuth } from "@/lib/auth"
-import { Play, MessageSquare, RotateCcw, FileText, Video, ChevronUp, ChevronDown, Search } from "lucide-react"
-import { VideoModal } from "@/components/video-modal"
+import { Play, Plus } from "lucide-react"
+import InterviewsTable from "@/components/interviews-table"
 import type { Persona, Interviewer, Interview, ProjectFile } from "@/lib/types"
 import PersonasPage from "@/app/personas/page"
 
@@ -539,7 +538,7 @@ export function ProjectWorkspace({ projectId, onBackToDashboard }: ProjectWorksp
       setSortDirection(sortDirection === "asc" ? "desc" : "asc")
     } else {
       setSortField(field)
-      setSortDirection("desc")
+      setSortDirection("asc")
     }
   }
 
@@ -587,11 +586,6 @@ export function ProjectWorkspace({ projectId, onBackToDashboard }: ProjectWorksp
       if (aValue > bValue) return sortDirection === "asc" ? 1 : -1
       return 0
     })
-  }
-
-  const renderSortIcon = (field: "createdAt" | "scenario" | "personaName" | "interviewerName") => {
-    if (sortField !== field) return null
-    return sortDirection === "asc" ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />
   }
 
   const loadVideos = async () => {
@@ -710,7 +704,7 @@ export function ProjectWorkspace({ projectId, onBackToDashboard }: ProjectWorksp
   }
 
   const handleRunInterview = (interview: Interview) => {
-    setActiveSection("interviews")
+    setActiveSection("run-interview")
   }
 
   const handleDuplicateInterview = (interview: Interview) => {
@@ -765,6 +759,7 @@ export function ProjectWorkspace({ projectId, onBackToDashboard }: ProjectWorksp
   }
 
   const renderMainContent = () => {
+    const filteredAndSortedInterviews = getFilteredAndSortedInterviews()
     switch (activeSection) {
       case "overview":
         return (
@@ -788,57 +783,31 @@ export function ProjectWorkspace({ projectId, onBackToDashboard }: ProjectWorksp
                     {videos.map((video) => (
                       <div
                         key={video.id}
-                        className="group bg-slate-50 rounded-lg overflow-hidden hover:bg-slate-100 transition-colors"
+                        className="relative bg-white rounded-lg border border-slate-200 overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+                        onClick={() => handlePlayVideo(video)}
                       >
-                        <div className="relative cursor-pointer" onClick={() => handlePlayVideo(video)}>
+                        <div className="aspect-video bg-slate-100 flex items-center justify-center relative">
                           {video.thumbnail ? (
-                            <img
-                              src={video.thumbnail || "/placeholder.svg"}
-                              alt={video.filename || video.name}
-                              className="w-full h-32 object-cover"
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement
-                                target.style.display = "none"
-                                target.nextElementSibling?.classList.remove("hidden")
-                              }}
-                            />
-                          ) : null}
-                          <div
-                            className={`w-full h-32 bg-slate-200 flex items-center justify-center ${video.thumbnail ? "hidden" : ""}`}
-                          >
+                            <>
+                              <img
+                                src={video.thumbnail || "/placeholder.svg"}
+                                alt={video.filename || video.name}
+                                className="w-full h-full object-cover"
+                              />
+                              <div className="absolute inset-0 bg-black/20 hover:bg-black/30 transition-colors flex items-center justify-center">
+                                <Play className="w-8 h-8 text-white" />
+                              </div>
+                            </>
+                          ) : (
                             <Play className="w-8 h-8 text-slate-400" />
-                          </div>
-                          <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-                            <Play className="w-8 h-8 text-white" />
-                          </div>
-                          {video.duration && (
-                            <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
-                              {video.duration}
-                            </div>
                           )}
                         </div>
                         <div className="p-3">
-                          <h4 className="font-medium text-sm mb-1">{video.filename || video.name}</h4>
-                          {video.interviewId ? (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                const interview = interviews.find((i) => i.id === video.interviewId)
-                                if (interview) {
-                                  console.log("[v0] Navigating to interview results:", interview.id)
-                                  setSelectedInterview(interview)
-                                  setActiveSection("results")
-                                }
-                              }}
-                              className="text-xs text-blue-600 hover:text-blue-800 hover:underline mb-1 block text-left transition-colors"
-                            >
-                              {video.interviewTitle || `Interview with ${video.personaName}`}
-                            </button>
-                          ) : (
-                            <p className="text-xs text-slate-600 mb-1">{video.interviewTitle || "Interview Video"}</p>
-                          )}
-                          <p className="text-xs text-slate-500">
-                            {video.personaName || new Date(video.uploadedAt).toLocaleDateString()}
+                          <h3 className="font-medium text-sm text-slate-900 truncate">
+                            {video.filename || video.name}
+                          </h3>
+                          <p className="text-xs text-slate-500 mt-1">
+                            {new Date(video.uploadedAt).toLocaleDateString()}
                           </p>
                         </div>
                       </div>
@@ -848,195 +817,26 @@ export function ProjectWorkspace({ projectId, onBackToDashboard }: ProjectWorksp
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2">
-                    <MessageSquare className="w-5 h-5" />
-                    Recent Interviews
-                  </CardTitle>
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
-                    <Input
-                      placeholder="Search interviews..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-9 w-64"
-                    />
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-slate-200">
-                        <th className="text-left py-2 px-3 text-sm font-medium text-slate-600">
-                          <button
-                            onClick={() => handleSort("scenario")}
-                            className="flex items-center gap-1 hover:text-slate-800 transition-colors"
-                          >
-                            Interview
-                            {renderSortIcon("scenario")}
-                          </button>
-                        </th>
-                        <th className="text-left py-2 px-3 text-sm font-medium text-slate-600">
-                          <button
-                            onClick={() => handleSort("interviewerName")}
-                            className="flex items-center gap-1 hover:text-slate-800 transition-colors"
-                          >
-                            Interviewer
-                            {renderSortIcon("interviewerName")}
-                          </button>
-                        </th>
-                        <th className="text-left py-2 px-3 text-sm font-medium text-slate-600">
-                          <button
-                            onClick={() => handleSort("personaName")}
-                            className="flex items-center gap-1 hover:text-slate-800 transition-colors"
-                          >
-                            Interviewee
-                            {renderSortIcon("personaName")}
-                          </button>
-                        </th>
-                        <th className="text-left py-2 px-3 text-sm font-medium text-slate-600">
-                          <button
-                            onClick={() => handleSort("createdAt")}
-                            className="flex items-center gap-1 hover:text-slate-800 transition-colors"
-                          >
-                            Date
-                            {renderSortIcon("createdAt")}
-                          </button>
-                        </th>
-                        <th className="text-left py-2 px-3 text-sm font-medium text-slate-600">Video</th>
-                        <th className="text-left py-2 px-3 text-sm font-medium text-slate-600">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {getFilteredAndSortedInterviews().map((interview, index) => {
-                        const hasVideo = videos.some((v) => v.interviewId === interview.id)
-                        return (
-                          <tr
-                            key={interview.id}
-                            className={`border-b border-slate-100 hover:bg-slate-50 transition-colors ${
-                              index % 2 === 0 ? "bg-white" : "bg-slate-50/50"
-                            }`}
-                          >
-                            <td className="py-3 px-3">
-                              <button
-                                onClick={() => handleViewInterview(interview)}
-                                className="text-left hover:text-blue-600 hover:underline transition-colors"
-                              >
-                                <div className="font-medium text-sm">{interview.scenario}</div>
-                              </button>
-                            </td>
-                            <td className="py-3 px-3">
-                              <button
-                                onClick={() => {
-                                  setActiveSection("interviewers")
-                                }}
-                                className="text-sm text-slate-700 hover:text-blue-600 hover:underline transition-colors"
-                              >
-                                {interview.interviewerName}
-                              </button>
-                            </td>
-                            <td className="py-3 px-3">
-                              <button
-                                onClick={() => {
-                                  setActiveSection("personas")
-                                }}
-                                className="text-sm text-slate-700 hover:text-blue-600 hover:underline transition-colors"
-                              >
-                                {interview.personaName}
-                              </button>
-                            </td>
-                            <td className="py-3 px-3">
-                              <div className="text-sm text-slate-700">
-                                {new Date(interview.createdAt).toLocaleDateString("en-US", {
-                                  month: "short",
-                                  day: "numeric",
-                                  year: "numeric",
-                                })}
-                              </div>
-                              <div className="text-xs text-slate-500">
-                                {new Date(interview.createdAt).toLocaleTimeString("en-US", {
-                                  hour: "numeric",
-                                  minute: "2-digit",
-                                  hour12: true,
-                                })}
-                              </div>
-                            </td>
-                            <td className="py-3 px-3">
-                              {hasVideo ? (
-                                <button
-                                  onClick={() => {
-                                    const video = videos.find((v) => v.interviewId === interview.id)
-                                    if (video) handlePlayVideo(video)
-                                  }}
-                                  className="flex items-center gap-1 text-blue-600 hover:text-blue-800 text-sm transition-colors"
-                                >
-                                  <Play className="w-3 h-3" />
-                                  <span className="sr-only">Play video</span>
-                                </button>
-                              ) : (
-                                <button
-                                  onClick={() => {
-                                    setSelectedInterview(interview)
-                                    setActiveSection("results")
-                                  }}
-                                  className="flex items-center gap-1 text-green-600 hover:text-green-800 text-sm transition-colors"
-                                >
-                                  <Video className="w-3 h-3" />
-                                  <span className="sr-only">Generate video</span>
-                                </button>
-                              )}
-                            </td>
-                            <td className="py-3 px-3">
-                              <div className="flex items-center gap-1">
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  onClick={() => handleRunInterview(interview)}
-                                  className="h-7 w-7 p-0"
-                                  title="Rerun interview"
-                                >
-                                  <RotateCcw className="w-3 h-3" />
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  onClick={() => {
-                                    setSelectedInterview(interview)
-                                    setActiveSection("results")
-                                  }}
-                                  className="h-7 w-7 p-0"
-                                  title="View transcript"
-                                >
-                                  <FileText className="w-3 h-3" />
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  onClick={() => {
-                                    setSelectedInterview(interview)
-                                    setActiveSection("results")
-                                  }}
-                                  className="h-7 w-7 p-0"
-                                  title="Generate video prompt"
-                                >
-                                  <Video className="w-3 h-3" />
-                                </Button>
-                              </div>
-                            </td>
-                          </tr>
-                        )
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              </CardContent>
-            </Card>
-
-            <VideoModal isOpen={showVideoModal} onClose={handleCloseModal} video={selectedVideo} />
+            <InterviewsTable
+              interviews={filteredAndSortedInterviews}
+              onViewInterview={handleViewInterview}
+              onRunInterview={handleRunInterview}
+              onDuplicateInterview={handleDuplicateInterview}
+              videos={videos}
+              onPlayVideo={handlePlayVideo}
+              searchTerm={searchTerm}
+              onSearchChange={setSearchTerm}
+              sortField={sortField}
+              sortDirection={sortDirection}
+              onSort={(field) => {
+                if (sortField === field) {
+                  setSortDirection(sortDirection === "asc" ? "desc" : "asc")
+                } else {
+                  setSortField(field)
+                  setSortDirection("asc")
+                }
+              }}
+            />
           </div>
         )
       case "personas":
@@ -1044,6 +844,44 @@ export function ProjectWorkspace({ projectId, onBackToDashboard }: ProjectWorksp
       case "interviewers":
         return <InterviewerManager />
       case "interviews":
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-bold text-foreground">Interviews</h1>
+                <p className="text-muted-foreground">View and manage all your user interviews</p>
+              </div>
+              <Button
+                onClick={() => setActiveSection("run-interview")}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                New Interview
+              </Button>
+            </div>
+            <InterviewsTable
+              interviews={filteredAndSortedInterviews}
+              onViewInterview={handleViewInterview}
+              onRunInterview={handleRunInterview}
+              onDuplicateInterview={handleDuplicateInterview}
+              videos={videos}
+              onPlayVideo={handlePlayVideo}
+              searchTerm={searchTerm}
+              onSearchChange={setSearchTerm}
+              sortField={sortField}
+              sortDirection={sortDirection}
+              onSort={(field) => {
+                if (sortField === field) {
+                  setSortDirection(sortDirection === "asc" ? "desc" : "asc")
+                } else {
+                  setSortField(field)
+                  setSortDirection("asc")
+                }
+              }}
+            />
+          </div>
+        )
+      case "run-interview":
         return <InterviewRunner onSectionChange={setActiveSection} onInterviewCompleted={handleInterviewCompleted} />
       case "results":
         return <ResultsAnalytics selectedInterview={selectedInterview} />

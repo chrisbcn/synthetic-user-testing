@@ -48,6 +48,13 @@ export function ProjectSidebar({
 
   const sidebarSections = [
     {
+      id: "overview",
+      label: "Overview",
+      icon: FileText,
+      count: null,
+      hasNewItems: false,
+    },
+    {
       id: "personas",
       label: "Personas",
       icon: UserCheck,
@@ -148,6 +155,17 @@ export function ProjectSidebar({
       </div>
 
       <ScrollArea className="flex-1 p-4">
+        {activeSection === "overview" && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-medium">Project Overview</h3>
+            </div>
+            <div className="text-sm text-muted-foreground">
+              <p>Get a comprehensive overview of your project here.</p>
+            </div>
+          </div>
+        )}
+
         {activeSection === "personas" && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">

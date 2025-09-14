@@ -596,8 +596,6 @@ export function ResultsAnalytics({ selectedInterview }: ResultsAnalyticsProps) {
     60 // Convert to minutes
 
   const parseMultipleSpeakers = (messageText, originalMessage) => {
-    console.log("[v0] Parsing message:", messageText.substring(0, 200) + "...")
-
     const speakerPatterns = [
       /researcher:\s*/gi,
       /sophia harrington:\s*/gi,
@@ -613,77 +611,51 @@ export function ResultsAnalytics({ selectedInterview }: ResultsAnalyticsProps) {
       /lisa anderson:\s*/gi,
       /michael brown:\s*/gi,
       /jennifer davis:\s*/gi,
+      // Generic pattern for any name followed by colon
+      /[A-Z][a-z]+ [A-Z][a-z]+:\s*/g,
     ]
 
-    const matches = []
-    speakerPatterns.forEach((pattern, patternIndex) => {
-      let match
-      const regex = new RegExp(pattern.source, pattern.flags)
-      while ((match = regex.exec(messageText)) !== null) {
-        matches.push({
-          index: match.index,
-          length: match[0].length,
-          pattern: pattern,
-          patternIndex: patternIndex,
-          isResearcher:
-            pattern.source.includes("researcher") ||
-            pattern.source.includes("interviewer") ||
-            pattern.source.includes("moderator"),
-        })
-      }
-    })
+    let segments = [{ text: messageText, speaker: "persona" }]
 
-    console.log("[v0] Found speaker matches:", matches)
+    // Split by each speaker pattern
+    speakerPatterns.forEach((pattern) => {
+      const newSegments = []
+      segments.forEach((segment) => {
+        if (segment.speaker === "persona" || segment.speaker === "moderator") {
+          const parts = segment.text.split(pattern)
+          if (parts.length > 1) {
+            // First part keeps original speaker
+            if (parts[0].trim()) {
+              newSegments.push({ text: parts[0].trim(), speaker: segment.speaker })
+            }
+            // Subsequent parts need speaker type detection
+            for (let i = 1; i < parts.length; i++) {
+              if (parts[i].trim()) {
+                const patternSource = pattern.source || pattern.toString()
+                const isResearcher =
+                  patternSource.includes("researcher") ||
+                  patternSource.includes("interviewer") ||
+                  patternSource.includes("moderator")
 
-    if (matches.length === 0) {
-      // No speaker patterns found, return as single persona segment
-      return [
-        {
-          speaker: "persona",
-          message: messageText,
-          timestamp: originalMessage.timestamp,
-        },
-      ]
-    }
-
-    // Sort matches by position
-    matches.sort((a, b) => a.index - b.index)
-    console.log("[v0] Sorted matches:", matches)
-
-    const segments = []
-    let lastIndex = 0
-
-    matches.forEach((match, i) => {
-      // Add content before this speaker (if any) as persona content
-      if (match.index > lastIndex) {
-        const beforeText = messageText.substring(lastIndex, match.index).trim()
-        if (beforeText) {
-          segments.push({
-            speaker: "persona",
-            message: beforeText,
-            timestamp: originalMessage.timestamp,
-          })
+                const speakerType = isResearcher ? "moderator" : "persona"
+                newSegments.push({ text: parts[i].trim(), speaker: speakerType })
+              }
+            }
+          } else {
+            newSegments.push(segment)
+          }
+        } else {
+          newSegments.push(segment)
         }
-      }
-
-      // Find the end of this speaker's content
-      const nextMatch = matches[i + 1]
-      const endIndex = nextMatch ? nextMatch.index : messageText.length
-      const speakerContent = messageText.substring(match.index + match.length, endIndex).trim()
-
-      if (speakerContent) {
-        segments.push({
-          speaker: match.isResearcher ? "moderator" : "persona",
-          message: speakerContent,
-          timestamp: originalMessage.timestamp,
-        })
-      }
-
-      lastIndex = endIndex
+      })
+      segments = newSegments
     })
 
-    console.log("[v0] Generated segments:", segments)
-    return segments
+    return segments.map((segment) => ({
+      ...originalMessage,
+      message: segment.text,
+      speaker: segment.speaker,
+    }))
   }
 
   const renderDetailedView = () => {
@@ -1380,41 +1352,31 @@ export function ResultsAnalytics({ selectedInterview }: ResultsAnalyticsProps) {
     let currentPair = { question: null, answer: null, followUps: [] }
 
     for (const message of selectedInterview.conversation || []) {
-      console.log("[v0] Processing message:", message.speaker, message.message.substring(0, 100))
-
       if (message.speaker === "moderator") {
         if (currentPair.question && (currentPair.answer || currentPair.followUps.length > 0)) {
-          console.log("[v0] Saving completed pair:", currentPair)
           groupedConversation.push(currentPair)
         }
         // Start new pair with this question
         currentPair = { question: message, answer: null, followUps: [] }
-        console.log("[v0] Started new pair with moderator question")
       } else if (message.speaker === "persona") {
         const segments = parseMultipleSpeakers(message.message, message)
-        console.log("[v0] Parsed segments:", segments.length)
 
         for (let i = 0; i < segments.length; i++) {
           const segment = segments[i]
-          console.log("[v0] Processing segment:", segment.speaker, segment.message.substring(0, 50))
 
           if (segment.speaker === "moderator") {
             if (currentPair.question && (currentPair.answer || currentPair.followUps.length > 0)) {
-              console.log("[v0] Saving pair before researcher question:", currentPair)
               groupedConversation.push(currentPair)
             }
             // Start completely new pair for the researcher question
             currentPair = { question: segment, answer: null, followUps: [] }
-            console.log("[v0] Created new pair for embedded researcher question")
           } else {
             // This is a persona response
             if (!currentPair.answer) {
               currentPair.answer = segment
-              console.log("[v0] Set as main answer")
             } else {
               // This is a follow-up response
               currentPair.followUps.push(segment)
-              console.log("[v0] Added as follow-up")
             }
           }
         }
@@ -1422,11 +1384,8 @@ export function ResultsAnalytics({ selectedInterview }: ResultsAnalyticsProps) {
     }
 
     if (currentPair.question && (currentPair.answer || currentPair.followUps.length > 0)) {
-      console.log("[v0] Saving final pair:", currentPair)
       groupedConversation.push(currentPair)
     }
-
-    console.log("[v0] Final grouped conversation:", groupedConversation.length, "pairs")
 
     return (
       <div className="space-y-6">
