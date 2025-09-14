@@ -595,6 +595,97 @@ export function ResultsAnalytics({ selectedInterview }: ResultsAnalyticsProps) {
     1000 /
     60 // Convert to minutes
 
+  const parseMultipleSpeakers = (messageText, originalMessage) => {
+    console.log("[v0] Parsing message:", messageText.substring(0, 200) + "...")
+
+    const speakerPatterns = [
+      /researcher:\s*/gi,
+      /sophia harrington:\s*/gi,
+      /interviewer:\s*/gi,
+      /moderator:\s*/gi,
+      /marcus chen:\s*/gi,
+      /priya sharma:\s*/gi,
+      /alex rodriguez:\s*/gi,
+      /sarah johnson:\s*/gi,
+      /david kim:\s*/gi,
+      /emily watson:\s*/gi,
+      /james wilson:\s*/gi,
+      /lisa anderson:\s*/gi,
+      /michael brown:\s*/gi,
+      /jennifer davis:\s*/gi,
+    ]
+
+    const matches = []
+    speakerPatterns.forEach((pattern, patternIndex) => {
+      let match
+      const regex = new RegExp(pattern.source, pattern.flags)
+      while ((match = regex.exec(messageText)) !== null) {
+        matches.push({
+          index: match.index,
+          length: match[0].length,
+          pattern: pattern,
+          patternIndex: patternIndex,
+          isResearcher:
+            pattern.source.includes("researcher") ||
+            pattern.source.includes("interviewer") ||
+            pattern.source.includes("moderator"),
+        })
+      }
+    })
+
+    console.log("[v0] Found speaker matches:", matches)
+
+    if (matches.length === 0) {
+      // No speaker patterns found, return as single persona segment
+      return [
+        {
+          speaker: "persona",
+          message: messageText,
+          timestamp: originalMessage.timestamp,
+        },
+      ]
+    }
+
+    // Sort matches by position
+    matches.sort((a, b) => a.index - b.index)
+    console.log("[v0] Sorted matches:", matches)
+
+    const segments = []
+    let lastIndex = 0
+
+    matches.forEach((match, i) => {
+      // Add content before this speaker (if any) as persona content
+      if (match.index > lastIndex) {
+        const beforeText = messageText.substring(lastIndex, match.index).trim()
+        if (beforeText) {
+          segments.push({
+            speaker: "persona",
+            message: beforeText,
+            timestamp: originalMessage.timestamp,
+          })
+        }
+      }
+
+      // Find the end of this speaker's content
+      const nextMatch = matches[i + 1]
+      const endIndex = nextMatch ? nextMatch.index : messageText.length
+      const speakerContent = messageText.substring(match.index + match.length, endIndex).trim()
+
+      if (speakerContent) {
+        segments.push({
+          speaker: match.isResearcher ? "moderator" : "persona",
+          message: speakerContent,
+          timestamp: originalMessage.timestamp,
+        })
+      }
+
+      lastIndex = endIndex
+    })
+
+    console.log("[v0] Generated segments:", segments)
+    return segments
+  }
+
   const renderDetailedView = () => {
     if (!selectedInterview) return null
 
@@ -1285,6 +1376,58 @@ export function ResultsAnalytics({ selectedInterview }: ResultsAnalyticsProps) {
   const renderTranscript = () => {
     if (!selectedInterview) return null
 
+    const groupedConversation = []
+    let currentPair = { question: null, answer: null, followUps: [] }
+
+    for (const message of selectedInterview.conversation || []) {
+      console.log("[v0] Processing message:", message.speaker, message.message.substring(0, 100))
+
+      if (message.speaker === "moderator") {
+        if (currentPair.question && (currentPair.answer || currentPair.followUps.length > 0)) {
+          console.log("[v0] Saving completed pair:", currentPair)
+          groupedConversation.push(currentPair)
+        }
+        // Start new pair with this question
+        currentPair = { question: message, answer: null, followUps: [] }
+        console.log("[v0] Started new pair with moderator question")
+      } else if (message.speaker === "persona") {
+        const segments = parseMultipleSpeakers(message.message, message)
+        console.log("[v0] Parsed segments:", segments.length)
+
+        for (let i = 0; i < segments.length; i++) {
+          const segment = segments[i]
+          console.log("[v0] Processing segment:", segment.speaker, segment.message.substring(0, 50))
+
+          if (segment.speaker === "moderator") {
+            if (currentPair.question && (currentPair.answer || currentPair.followUps.length > 0)) {
+              console.log("[v0] Saving pair before researcher question:", currentPair)
+              groupedConversation.push(currentPair)
+            }
+            // Start completely new pair for the researcher question
+            currentPair = { question: segment, answer: null, followUps: [] }
+            console.log("[v0] Created new pair for embedded researcher question")
+          } else {
+            // This is a persona response
+            if (!currentPair.answer) {
+              currentPair.answer = segment
+              console.log("[v0] Set as main answer")
+            } else {
+              // This is a follow-up response
+              currentPair.followUps.push(segment)
+              console.log("[v0] Added as follow-up")
+            }
+          }
+        }
+      }
+    }
+
+    if (currentPair.question && (currentPair.answer || currentPair.followUps.length > 0)) {
+      console.log("[v0] Saving final pair:", currentPair)
+      groupedConversation.push(currentPair)
+    }
+
+    console.log("[v0] Final grouped conversation:", groupedConversation.length, "pairs")
+
     return (
       <div className="space-y-6">
         {/* Header */}
@@ -1295,29 +1438,64 @@ export function ResultsAnalytics({ selectedInterview }: ResultsAnalyticsProps) {
           </p>
         </div>
 
-        {/* Transcript Content */}
-        <div className="space-y-4">
-          {(selectedInterview.conversation || []).map((message, index) => (
-            <div key={index} className="p-4 bg-slate-50 rounded-lg">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                  {message.speaker === "moderator" ? (
-                    <MessageSquare className="w-5 h-5 text-blue-600" />
-                  ) : (
-                    <Lightbulb className="w-5 h-5 text-yellow-500" />
-                  )}
-                </div>
-                <div>
-                  <p className="font-medium">{message.speaker === "moderator" ? "Moderator" : "Persona"}</p>
-                  <p className="text-sm text-slate-600">{message.message}</p>
-                  <p className="text-xs text-slate-500">{new Date(message.timestamp).toLocaleTimeString()}</p>
+        {/* Q&A Pairs */}
+        <div className="space-y-6">
+          {groupedConversation.map((pair, index) => (
+            <div key={index} className="border-l-4 border-blue-200 pl-6 space-y-4">
+              {/* Question */}
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                    <MessageSquare className="w-4 h-4 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium text-blue-900 mb-1">Interviewer</p>
+                    <p className="text-slate-700">{pair.question.message}</p>
+                    <p className="text-xs text-slate-500 mt-2">
+                      {new Date(pair.question.timestamp).toLocaleTimeString()}
+                    </p>
+                  </div>
                 </div>
               </div>
+
+              {/* Main Answer */}
+              {pair.answer && (
+                <div className="bg-slate-50 p-4 rounded-lg ml-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 bg-slate-600 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Users className="w-4 h-4 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium text-slate-900 mb-1">{selectedInterview.personaName}</p>
+                      <p className="text-slate-700">{pair.answer.message}</p>
+                      <p className="text-xs text-slate-500 mt-2">
+                        {new Date(pair.answer.timestamp).toLocaleTimeString()}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {pair.followUps.map((followUp, followUpIndex) => (
+                <div key={followUpIndex} className="bg-slate-100 p-4 rounded-lg ml-8 border-l-2 border-slate-300">
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 bg-slate-500 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Users className="w-3 h-3 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium text-slate-800 mb-1 text-sm">
+                        {selectedInterview.personaName} (Follow-up)
+                      </p>
+                      <p className="text-slate-700 text-sm">{followUp.message}</p>
+                      <p className="text-xs text-slate-500 mt-2">{new Date(followUp.timestamp).toLocaleTimeString()}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           ))}
         </div>
 
-        {/* Video Generator Modal */}
         {showVideoGenerator && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-auto">
@@ -1339,8 +1517,6 @@ export function ResultsAnalytics({ selectedInterview }: ResultsAnalyticsProps) {
             </div>
           </div>
         )}
-
-        <VideoModal isOpen={showVideoModal} onClose={handleCloseVideoModal} video={selectedVideo} />
       </div>
     )
   }

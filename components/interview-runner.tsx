@@ -10,6 +10,8 @@ import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Loader2, Send, Play, RotateCcw, Key, AlertTriangle, Lightbulb, FileText } from "lucide-react"
 import type { Persona, Scenario, ConversationTurn, InterviewerPersona, Interview } from "@/lib/types"
+import ConversationalChat from "./conversational-chat"
+import MessageInput from "./message-input"
 
 const scenarios: Scenario[] = [
   {
@@ -620,6 +622,16 @@ export function InterviewRunner({ onSectionChange, onInterviewCompleted }: Inter
   const [showApiKeyInput, setShowApiKeyInput] = useState(false)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
 
+  const [interviewType, setInterviewType] = useState<"quick" | "conversational">("quick")
+  const [conversationalMessages, setConversationalMessages] = useState<
+    Array<{
+      role: "interviewer" | "persona"
+      content: string
+      timestamp: Date
+    }>
+  >([])
+  const [suggestedQuestion, setSuggestedQuestion] = useState<string>("")
+
   useEffect(() => {
     if (selectedPersona || selectedScenario) {
       const recommended = getRecommendedInterviewer(selectedPersona, selectedScenario)
@@ -650,6 +662,146 @@ export function InterviewRunner({ onSectionChange, onInterviewCompleted }: Inter
 
     setConversation([initialTurn])
     await sendMessage(firstQuestion, [])
+  }
+
+  const handleConversationalMessage = async (message: string) => {
+    if (!selectedPersona || !selectedScenario) return
+
+    setIsLoading(true)
+
+    // Add interviewer message to conversation
+    const interviewerMessage = {
+      role: "interviewer" as const,
+      content: message,
+      timestamp: new Date(),
+    }
+
+    setConversationalMessages((prev) => [...prev, interviewerMessage])
+
+    try {
+      // Use existing API but with enhanced prompting
+      const response = await fetch("/api/interview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          persona: selectedPersona,
+          scenario: selectedScenario,
+          interviewer: selectedInterviewer,
+          message,
+          conversationHistory: buildConversationHistory(conversationalMessages, message),
+          apiKey: apiKey || undefined,
+        }),
+      })
+
+      if (!response.ok) {
+        if (response.status === 429) {
+          throw new Error("Rate limit reached. Please wait a moment before continuing the conversation.")
+        }
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+
+      if (!data.success) {
+        throw new Error(data.error || "Failed to get response")
+      }
+
+      // Add persona response
+      const personaMessage = {
+        role: "persona" as const,
+        content: data.response,
+        timestamp: new Date(),
+      }
+
+      setConversationalMessages((prev) => [...prev, personaMessage])
+
+      // Generate next question suggestion
+      generateNextQuestionSuggestion(message, data.response)
+    } catch (error) {
+      console.error("Error in conversational interview:", error)
+      setError(error instanceof Error ? error.message : "Failed to send message")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const buildConversationHistory = (
+    messages: typeof conversationalMessages,
+    currentMessage: string,
+  ): ConversationTurn[] => {
+    const history: ConversationTurn[] = messages.map((msg) => ({
+      speaker: msg.role === "interviewer" ? "moderator" : "persona",
+      message: msg.content,
+      timestamp: msg.timestamp,
+    }))
+
+    // Add current message
+    history.push({
+      speaker: "moderator",
+      message: currentMessage,
+      timestamp: new Date(),
+    })
+
+    return history
+  }
+
+  const generateNextQuestionSuggestion = async (lastInterviewerMsg: string, lastPersonaResponse: string) => {
+    try {
+      const response = await fetch("/api/suggest-question", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          lastInterviewerMsg,
+          lastPersonaResponse,
+          persona: selectedPersona,
+          scenario: selectedScenario,
+        }),
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        if (data.success) {
+          setSuggestedQuestion(data.suggestedQuestion)
+        }
+      }
+    } catch (error) {
+      console.error("Error generating suggestion:", error)
+    }
+  }
+
+  const completeConversationalInterview = () => {
+    if (!selectedPersona || !selectedScenario || !selectedInterviewer) return
+
+    setInterviewStatus("completed")
+
+    const interviewResult: Interview = {
+      id: `interview-${Date.now()}`,
+      personaId: selectedPersona.id,
+      personaName: selectedPersona.name,
+      interviewerId: selectedInterviewer.id,
+      interviewerName: selectedInterviewer.name,
+      scenarioId: selectedScenario.id,
+      scenario: selectedScenario.name,
+      status: "completed",
+      createdAt: new Date().toISOString(),
+      conversation: conversationalMessages.map((msg) => ({
+        speaker: msg.role === "interviewer" ? "moderator" : "persona",
+        message: msg.content,
+        timestamp: msg.timestamp,
+      })),
+      messages: conversationalMessages.map((msg, index) => ({
+        id: `msg-${Date.now()}-${index}`,
+        role: msg.role,
+        content: msg.content,
+        timestamp: msg.timestamp.toISOString(),
+      })),
+    }
+
+    console.log("[v0] Conversational interview completed:", interviewResult)
+
+    if (onInterviewCompleted) {
+      onInterviewCompleted(interviewResult)
+    }
   }
 
   const sendMessage = async (message: string, currentConversation: ConversationTurn[] = conversation) => {
@@ -782,6 +934,9 @@ export function InterviewRunner({ onSectionChange, onInterviewCompleted }: Inter
     setShowApiKeyInput(false)
     setApiKey("")
     setSelectedInterviewer(null)
+    setInterviewType("quick")
+    setConversationalMessages([])
+    setSuggestedQuestion("")
   }
 
   const canStart = selectedPersona && selectedScenario && selectedInterviewer && interviewStatus === "setup"
@@ -888,6 +1043,31 @@ export function InterviewRunner({ onSectionChange, onInterviewCompleted }: Inter
                 </Select>
               </div>
               <div className="space-y-2">
+                <label className="text-sm font-semibold text-slate-700 uppercase tracking-wide">Interview Type</label>
+                <div className="space-y-2">
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      value="quick"
+                      checked={interviewType === "quick"}
+                      onChange={(e) => setInterviewType(e.target.value as "quick")}
+                      className="mr-2"
+                    />
+                    Quick Validation (5 questions, 10 minutes)
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      value="conversational"
+                      checked={interviewType === "conversational"}
+                      onChange={(e) => setInterviewType(e.target.value as "conversational")}
+                      className="mr-2"
+                    />
+                    Professional Interview (35-40 minutes, conversational)
+                  </label>
+                </div>
+              </div>
+              <div className="space-y-2">
                 <label className="text-sm font-semibold text-slate-700 uppercase tracking-wide flex items-center gap-2">
                   Select Interviewer
                   {selectedInterviewer && (
@@ -958,19 +1138,91 @@ export function InterviewRunner({ onSectionChange, onInterviewCompleted }: Inter
               </div>
             )}
 
-            <Button
-              onClick={startInterview}
-              disabled={!canStart}
-              className="w-full h-12 text-lg bg-[#23282a] text-white hover:bg-[#23282a]/90"
-            >
-              <Play className="w-5 h-5 mr-2" />
-              Start Live Interview
-            </Button>
+            {interviewType === "quick" ? (
+              <Button
+                onClick={startInterview}
+                disabled={!canStart}
+                className="w-full h-12 text-lg bg-[#23282a] text-white hover:bg-[#23282a]/90"
+              >
+                <Play className="w-5 h-5 mr-2" />
+                Start Quick Interview
+              </Button>
+            ) : (
+              <Button
+                onClick={() => {
+                  setInterviewStatus("active")
+                  handleConversationalMessage("Hi! Thanks for joining us today. How's your day going?")
+                }}
+                disabled={!canStart}
+                className="w-full h-12 text-lg bg-blue-600 text-white hover:bg-blue-700"
+              >
+                <Play className="w-5 h-5 mr-2" />
+                Start Professional Interview
+              </Button>
+            )}
           </CardContent>
         </Card>
       )}
 
-      {interviewStatus === "active" && (
+      {interviewStatus === "active" && interviewType === "conversational" && (
+        <div className="space-y-4">
+          <Card className="bg-white/80 backdrop-blur-sm border-white/20">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-6">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">{selectedPersona?.avatar}</span>
+                    <div>
+                      <h3 className="font-semibold">{selectedPersona?.name}</h3>
+                      <p className="text-sm text-slate-600">{selectedScenario?.name}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 text-slate-500">
+                    <span className="text-sm">interviewed by</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">{selectedInterviewer?.avatar_emoji}</span>
+                      <div>
+                        <p className="text-sm font-medium">{selectedInterviewer?.name}</p>
+                        <p className="text-xs text-slate-500">{selectedInterviewer?.specialization}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <Badge variant="outline">Professional Interview</Badge>
+              </div>
+
+              {/* Conversational Chat Interface */}
+              <ConversationalChat
+                messages={conversationalMessages}
+                onSendMessage={handleConversationalMessage}
+                isPersonaTyping={isLoading}
+              />
+
+              {/* Message Input */}
+              <div className="mt-4">
+                <MessageInput
+                  onSendMessage={handleConversationalMessage}
+                  suggestedQuestion={suggestedQuestion}
+                  disabled={isLoading}
+                />
+              </div>
+
+              {/* Complete Interview Button */}
+              <div className="flex justify-center mt-4">
+                <Button
+                  onClick={completeConversationalInterview}
+                  className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
+                >
+                  Complete Interview
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* ... existing quick interview active state ... */}
+      {interviewStatus === "active" && interviewType === "quick" && (
         <div className="space-y-4">
           <Card className="bg-white/80 backdrop-blur-sm border-white/20">
             <CardContent className="p-4">
