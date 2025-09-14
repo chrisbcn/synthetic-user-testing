@@ -10,22 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import {
-  UserCheck,
-  FileText,
-  MessageSquare,
-  Upload,
-  Plus,
-  Edit,
-  Trash2,
-  LayoutDashboard,
-  Settings,
-  ChevronDown,
-  ChevronRight,
-  Zap,
-  Folder,
-  Users,
-} from "lucide-react"
+import { UserCheck, FileText, MessageSquare, Upload, Plus, Trash2, Settings } from "lucide-react"
 import type { Interviewer, Interview, ProjectFile } from "@/lib/types"
 
 interface ProjectSidebarProps {
@@ -60,20 +45,12 @@ export function ProjectSidebar({
   onProjectSwitch,
 }: ProjectSidebarProps) {
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false)
-  const [subProjectsExpanded, setSubProjectsExpanded] = useState(true)
 
   const sidebarSections = [
     {
-      id: "overview",
-      label: "Overview",
-      icon: LayoutDashboard,
-      count: null,
-      hasNewItems: false,
-    },
-    {
       id: "personas",
       label: "Personas",
-      icon: Users,
+      icon: UserCheck,
       count: 10,
       hasNewItems: false,
     },
@@ -114,17 +91,6 @@ export function ProjectSidebar({
     },
   ]
 
-  const subProjects = [
-    { id: "uhnw", name: "UHNW Segment", interviewCount: 5 },
-    { id: "hnw", name: "HNW Segment", interviewCount: 8 },
-    { id: "stylist", name: "Stylist Experience", interviewCount: 2 },
-  ]
-
-  const quickActions = [
-    { id: "new-interview", label: "New Interview", icon: Plus },
-    { id: "export-results", label: "Export Results", icon: Upload },
-  ]
-
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file) {
@@ -135,7 +101,7 @@ export function ProjectSidebar({
 
   return (
     <div
-      className="w-80 border-r border-border sticky top-0 h-screen flex flex-col"
+      className="w-full max-w-[250px] border-r border-border sticky top-0 h-screen flex flex-col"
       style={{ backgroundColor: "var(--background-color)" }}
     >
       <div className="p-6 border-b border-border">
@@ -181,92 +147,7 @@ export function ProjectSidebar({
         </div>
       </div>
 
-      <div className="p-4 border-b border-border">
-        <Button
-          variant="ghost"
-          className="w-full justify-start h-8 text-sm font-medium text-muted-foreground mb-2"
-          onClick={() => setSubProjectsExpanded(!subProjectsExpanded)}
-        >
-          <Folder className="w-4 h-4 mr-2" />
-          Sub-Projects
-          {subProjectsExpanded ? (
-            <ChevronDown className="w-3 h-3 ml-auto" />
-          ) : (
-            <ChevronRight className="w-3 h-3 ml-auto" />
-          )}
-        </Button>
-        {subProjectsExpanded && (
-          <div className="space-y-1 ml-2">
-            {subProjects.map((subProject) => (
-              <Button
-                key={subProject.id}
-                variant="ghost"
-                className="w-full justify-start h-8 text-sm text-slate-700 hover:text-slate-900 hover:bg-[#EDE6DA]"
-                onClick={() => console.log("Navigate to sub-project:", subProject.id)}
-              >
-                <Folder className="w-3 h-3 mr-2" />
-                <span className="flex-1 text-left">{subProject.name}</span>
-                <span className="text-xs text-muted-foreground">({subProject.interviewCount} interviews)</span>
-              </Button>
-            ))}
-          </div>
-        )}
-      </div>
-
-      <div className="p-4 border-b border-border">
-        <div className="flex items-center mb-2">
-          <Zap className="w-4 h-4 mr-2 text-muted-foreground" />
-          <span className="text-sm font-medium text-muted-foreground">Quick Actions</span>
-        </div>
-        <div className="space-y-1">
-          {quickActions.map((action) => {
-            const Icon = action.icon
-            return (
-              <Button
-                key={action.id}
-                variant="ghost"
-                size="sm"
-                className="w-full justify-start h-8 text-sm hover:bg-[#EDE6DA]"
-                onClick={() => {
-                  if (action.id === "new-interview") onSectionChange("interviews")
-                  if (action.id === "export-results") onSectionChange("results")
-                }}
-              >
-                <Icon className="w-3 h-3 mr-2" />
-                {action.label}
-              </Button>
-            )
-          })}
-        </div>
-      </div>
-
-      {/* Content Area */}
       <ScrollArea className="flex-1 p-4">
-        {activeSection === "overview" && (
-          <div className="space-y-4">
-            <h3 className="font-medium">Project Overview</h3>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Personas</span>
-                <span className="font-medium">10</span>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Interviewers</span>
-                <span className="font-medium">10</span>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Interviews</span>
-                <span className="font-medium">5</span>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Video Pullquotes</span>
-                <span className="font-medium">4</span>
-              </div>
-            </div>
-            <p className="text-sm text-muted-foreground mt-4">Track your project progress and key metrics.</p>
-          </div>
-        )}
-
         {activeSection === "personas" && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -276,7 +157,6 @@ export function ProjectSidebar({
               <p>Detailed persona profiles with rich character information for consistent testing.</p>
             </div>
             <div className="space-y-2">
-              {/* Quick persona preview */}
               {[
                 { name: "Sophia Harrington", type: "Ultra-HNW Collector" },
                 { name: "Marcus Chen", type: "Strategic Builder" },
@@ -325,7 +205,7 @@ export function ProjectSidebar({
                         className="h-6 w-6 p-0"
                         onClick={() => onEditInterviewer(interviewer)}
                       >
-                        <Edit className="w-3 h-3" />
+                        <Plus className="w-3 h-3" />
                       </Button>
                       <Button
                         variant="ghost"
@@ -353,7 +233,6 @@ export function ProjectSidebar({
               </Button>
             </div>
             <div className="space-y-2">
-              {/* Mock scenarios */}
               {[
                 "Product Discovery Flow",
                 "Checkout Experience",
@@ -366,7 +245,7 @@ export function ProjectSidebar({
                     <p className="font-medium text-sm">{scenario}</p>
                     <div className="flex gap-1">
                       <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                        <Edit className="w-3 h-3" />
+                        <Plus className="w-3 h-3" />
                       </Button>
                       <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
                         <Trash2 className="w-3 h-3" />
