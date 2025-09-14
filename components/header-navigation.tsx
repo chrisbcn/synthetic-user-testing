@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Search, ChevronDown, Settings, User, LogOut, Home } from "lucide-react"
+import { Search, ChevronDown, Settings, User, LogOut } from "lucide-react"
 import { BreadcrumbNavigation } from "@/components/breadcrumb-navigation"
 
 interface Project {
@@ -56,8 +56,7 @@ export function HeaderNavigation({
               onClick={onNavigateHome}
               className="flex items-center space-x-2 text-lg font-semibold text-gray-900 hover:text-gray-700"
             >
-              <Home className="h-5 w-5" />
-              <span>Homunculus</span>
+              <img src="/homonc-logo.svg" alt="Homonc" className="h-6 w-6" />
             </Button>
 
             {/* Project Switcher */}

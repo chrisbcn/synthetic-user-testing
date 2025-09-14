@@ -96,6 +96,13 @@ export function ProjectSidebar({
       count: null,
       hasNewItems: false,
     },
+    {
+      id: "run-interview",
+      label: "Run Interview",
+      icon: Plus,
+      count: null,
+      hasNewItems: false,
+    },
   ]
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -115,13 +122,6 @@ export function ProjectSidebar({
         <div>
           <h2 className="text-xl font-semibold text-foreground">Maura UX Testing</h2>
           <p className="text-sm text-muted-foreground mt-1">Luxury Fashion Testing</p>
-          <Button
-            onClick={() => onSectionChange("interviews")}
-            className="mt-3 bg-primary hover:bg-primary/90 text-primary-foreground font-medium px-4 py-2 rounded-md shadow-sm transition-colors"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            New Interview
-          </Button>
         </div>
       </div>
 
@@ -280,7 +280,11 @@ export function ProjectSidebar({
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-medium">Interview Sessions</h3>
-              <Button size="sm" className="bg-accent hover:bg-accent/90">
+              <Button
+                size="sm"
+                className="bg-accent hover:bg-accent/90"
+                onClick={() => onSectionChange("run-interview")}
+              >
                 <Plus className="w-4 h-4 mr-1" />
                 New
               </Button>
@@ -352,6 +356,17 @@ export function ProjectSidebar({
           <div className="space-y-4">
             <h3 className="font-medium">Project Settings</h3>
             <p className="text-sm text-muted-foreground">Configure your project settings here.</p>
+          </div>
+        )}
+
+        {activeSection === "run-interview" && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-medium">Run Interview</h3>
+            </div>
+            <div className="text-sm text-muted-foreground">
+              <p>Start a new interview session here.</p>
+            </div>
           </div>
         )}
       </ScrollArea>
