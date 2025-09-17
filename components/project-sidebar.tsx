@@ -134,10 +134,8 @@ export function ProjectSidebar({
                 key={section.id}
                 variant={activeSection === section.id ? "secondary" : "ghost"}
                 className={`w-full justify-start h-10 relative hover:bg-[#EDE6DA] ${
-                  activeSection === section.id
-                    ? "bg-white text-[#23282a] hover:bg-white/90" // keeping active state styling
-                    : ""
-                }`}
+                  activeSection === section.id ? "bg-white text-[#23282a] hover:bg-white/90" : ""
+                } ${section.id === "run-interview" ? "bg-black text-white hover:bg-gray-800" : ""}`}
                 onClick={() => onSectionChange(section.id)}
               >
                 <Icon className="w-4 h-4 mr-3" />
