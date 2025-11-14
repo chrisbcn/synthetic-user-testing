@@ -8,6 +8,7 @@
  * 4. Metadata server (when running on GCP)
  */
 
+import { GoogleAuth } from "google-auth-library"
 import { logger } from "./utils"
 
 export interface GoogleCloudConfig {
@@ -21,11 +22,12 @@ export interface GoogleCloudConfig {
  * Tries multiple methods in order:
  * 1. Environment variable GOOGLE_CLOUD_ACCESS_TOKEN
  * 2. Metadata server (if running on GCP)
- * 3. Returns null (will rely on ADC or service account)
+ * 3. Application Default Credentials (ADC) via Google Auth Library
  */
 export async function getGoogleCloudAccessToken(): Promise<string | null> {
   // Method 1: Direct access token from env
   if (process.env.GOOGLE_CLOUD_ACCESS_TOKEN) {
+    logger.debug("Using access token from GOOGLE_CLOUD_ACCESS_TOKEN env var")
     return process.env.GOOGLE_CLOUD_ACCESS_TOKEN
   }
 
@@ -52,7 +54,23 @@ export async function getGoogleCloudAccessToken(): Promise<string | null> {
     logger.debug("Metadata server not available (not running on GCP)")
   }
 
-  // Method 3: Will rely on Application Default Credentials or service account
+  // Method 3: Use Application Default Credentials (ADC)
+  try {
+    const auth = new GoogleAuth({
+      scopes: ["https://www.googleapis.com/auth/cloud-platform"],
+    })
+    const client = await auth.getClient()
+    const accessToken = await client.getAccessToken()
+    
+    if (accessToken.token) {
+      logger.debug("Retrieved access token from Application Default Credentials")
+      return accessToken.token
+    }
+  } catch (error) {
+    logger.warn("Failed to get access token from ADC", error)
+    // This is okay - might not be configured yet
+  }
+
   return null
 }
 

@@ -48,25 +48,52 @@ You have three options for authentication:
    export GOOGLE_APPLICATION_CREDENTIALS="/path/to/key.json"
    ```
 
-### Option B: Access Token (For Testing)
+### Option B: Access Token (For Testing/Quick Setup)
 
-1. **Get Access Token:**
-   ```bash
-   gcloud auth application-default print-access-token
-   ```
+**For Local Development:**
+```bash
+# Install gcloud CLI if needed
+brew install google-cloud-sdk  # macOS
+# or download from https://cloud.google.com/sdk/docs/install
 
-2. **Set Environment Variable:**
-   ```bash
-   export GOOGLE_CLOUD_ACCESS_TOKEN="your-access-token-here"
-   ```
+# Authenticate
+gcloud auth login
 
-### Option C: Application Default Credentials (For Local Development)
+# Set your project
+gcloud config set project YOUR_PROJECT_ID
+
+# Get access token (valid for 1 hour)
+gcloud auth print-access-token
+```
+
+**Copy the token and set environment variable:**
+```bash
+export GOOGLE_CLOUD_ACCESS_TOKEN="your-access-token-here"
+```
+
+**Note:** Access tokens expire after 1 hour. For production, use Service Account (Option A) instead.
+
+### Option C: Application Default Credentials (ADC) - Recommended for Local Development
+
+**This is the recommended method for local development!**
 
 ```bash
 gcloud auth application-default login
 ```
 
-This will use your personal credentials for local development.
+This will:
+- Open your browser for authentication
+- Store credentials at `~/.config/gcloud/application_default_credentials.json`
+- Automatically refresh tokens as needed
+- Work seamlessly with the app (no need to set `GOOGLE_CLOUD_ACCESS_TOKEN`)
+
+**After running this command, you only need:**
+```bash
+GOOGLE_CLOUD_PROJECT_ID=synth-users
+GOOGLE_CLOUD_LOCATION=us-central1
+```
+
+The app will automatically use ADC for authentication. No access token needed!
 
 ## Step 3: Configure Environment Variables
 
