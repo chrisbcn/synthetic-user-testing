@@ -185,18 +185,22 @@ export interface Project {
 
 export interface VideoPullquote {
   id: string
-  projectId: string // Added project association
+  projectId?: string // Added project association
   interviewId: string
   personaId: string
   responseText: string
   videoPrompt: string
   videoUrl?: string
   thumbnailUrl?: string
-  status: "pending" | "generating" | "completed" | "failed"
+  status: "pending" | "generating" | "completed" | "failed" | "error"
   createdAt: Date
   generatedAt?: Date
-  duration?: number
+  duration?: number | string
   title?: string
+  error?: string
+  generatedPrompt?: string
+  taskId?: string // For async video generation tracking
+  provider?: string // Video generation provider (veo-3, runway-ml, etc.)
 }
 
 // Added interviewer persona interface

@@ -133,20 +133,33 @@ ${responseText}`
       console.log("[v0] Video API response:", result)
 
       const responsePreview = responseText.substring(0, 50).replace(/\n/g, " ")
+      
+      // Determine status based on result
+      let videoStatus: "completed" | "generating" | "error" = "completed"
+      if (result.success === false) {
+        videoStatus = "error"
+      } else if (result.status === "generating" || result.taskId) {
+        videoStatus = "generating"
+      } else if (result.videoUrl) {
+        videoStatus = "completed"
+      }
+
       const newVideo: VideoPullquote = {
         id: `video-${Date.now()}`,
         interviewId: `interview-${persona?.id || "unknown"}`,
         personaId: persona?.id || "unknown",
         responseText,
         videoPrompt,
-        status: result.success === false ? "error" : "completed",
+        status: videoStatus,
         createdAt: new Date(),
         title: `${persona?.name || "Unknown Persona"}: "${responsePreview}${responseText.length > 50 ? "..." : ""}"`,
-        videoUrl: undefined,
+        videoUrl: result.videoUrl || undefined,
         thumbnailUrl: result.thumbnailUrl,
         duration: result.duration || "30s",
         error: result.error,
         generatedPrompt: result.generatedPrompt || result.prompt || videoPrompt,
+        taskId: result.taskId, // Store task ID for polling if needed
+        provider: result.provider, // Store provider info
       }
 
       console.log(
@@ -230,11 +243,11 @@ ${responseText}`
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <FileText className="h-5 w-5" />
-            Enhanced Video Prompt Generator
+            Video Generator
           </CardTitle>
           <CardDescription>
-            Generate optimized video prompts using detailed character bible data for consistent, high-quality video
-            generation with VEO 3.
+            Generate videos directly using Veo 3 with detailed character bible data for consistent, high-quality video
+            generation.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -309,12 +322,12 @@ ${responseText}`
             {isGenerating ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Generating Enhanced Prompt...
+                Generating Video...
               </>
             ) : (
               <>
                 <FileText className="mr-2 h-4 w-4" />
-                Generate Enhanced Video Prompt
+                Generate Video with Veo 3
               </>
             )}
           </Button>
@@ -322,9 +335,48 @@ ${responseText}`
           {showCurrentPrompt && currentGeneratedPrompt && (
             <Card className="bg-green-50 border-green-200">
               <CardHeader>
-                <CardTitle className="text-lg text-green-800">Generated Enhanced Video Prompt</CardTitle>
+                <CardTitle className="text-lg text-green-800">
+                  {generatedVideos[generatedVideos.length - 1]?.videoUrl
+                    ? "Video Generated Successfully!"
+                    : generatedVideos[generatedVideos.length - 1]?.status === "generating"
+                      ? "Video Generation in Progress..."
+                      : "Generated Enhanced Video Prompt"}
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
+                {/* Show video if available */}
+                {generatedVideos[generatedVideos.length - 1]?.videoUrl && (
+                  <div className="space-y-2">
+                    <video
+                      src={generatedVideos[generatedVideos.length - 1].videoUrl}
+                      controls
+                      className="w-full rounded-lg border"
+                      style={{ maxHeight: "400px" }}
+                    >
+                      Your browser does not support the video tag.
+                    </video>
+                    <p className="text-sm text-muted-foreground">
+                      Generated with {generatedVideos[generatedVideos.length - 1]?.provider || "Veo 3"}
+                    </p>
+                  </div>
+                )}
+
+                {/* Show generating status */}
+                {generatedVideos[generatedVideos.length - 1]?.status === "generating" && (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-blue-600">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <span>Video is being generated. This may take a few minutes...</span>
+                    </div>
+                    {generatedVideos[generatedVideos.length - 1]?.taskId && (
+                      <p className="text-xs text-muted-foreground">
+                        Task ID: {generatedVideos[generatedVideos.length - 1].taskId}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {/* Show prompt */}
                 <Textarea value={currentGeneratedPrompt} readOnly className="min-h-[150px] bg-white text-sm" />
                 <div className="flex gap-2">
                   <Button
@@ -355,16 +407,19 @@ ${responseText}`
                       </>
                     )}
                   </Button>
-                  <Button
-                    onClick={() =>
-                      window.open(
-                        "https://labs.google/fx/tools/flow/project/d4048cd9-3ab3-4ecb-9bec-50cfd0c0915c",
-                        "_blank",
-                      )
-                    }
-                  >
-                    Try VEO 3
-                  </Button>
+                  {!generatedVideos[generatedVideos.length - 1]?.videoUrl && (
+                    <Button
+                      onClick={() =>
+                        window.open(
+                          "https://labs.google/fx/tools/flow/project/d4048cd9-3ab3-4ecb-9bec-50cfd0c0915c",
+                          "_blank",
+                        )
+                      }
+                      variant="outline"
+                    >
+                      Open VEO 3 (Manual)
+                    </Button>
+                  )}
                 </div>
               </CardContent>
             </Card>
