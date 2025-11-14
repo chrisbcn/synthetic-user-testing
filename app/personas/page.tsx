@@ -19,6 +19,8 @@ import {
   Upload,
   ChevronLeft,
   ChevronRight,
+  Sparkles,
+  Loader2,
 } from "lucide-react"
 import enhancedPersonasData from "@/data/enhanced-personas.json"
 
@@ -59,6 +61,7 @@ export default function PersonasPage() {
   const [personaImages, setPersonaImages] = useState<{ [key: string]: string[] }>({})
   const [currentImageIndex, setCurrentImageIndex] = useState<{ [key: string]: number }>({})
   const [imageLoadingStates, setImageLoadingStates] = useState<{ [key: string]: "loading" | "loaded" | "error" }>({})
+  const [generatingImage, setGeneratingImage] = useState<{ [key: string]: boolean }>({})
 
   useEffect(() => {
     const loadPersonaImages = async () => {
@@ -79,6 +82,161 @@ export default function PersonasPage() {
 
   const toggleExpanded = (personaId: string) => {
     setExpandedPersona(expandedPersona === personaId ? null : personaId)
+  }
+
+  const buildPersonaImagePrompt = (persona: any): string => {
+    const visualDNA = persona.character_bible?.visual_dna || {}
+    const setting = persona.character_bible?.setting || {}
+    const personality = persona.personality_profile || {}
+    
+    let prompt = `Professional portrait photograph of ${persona.name}, a ${persona.age}-year-old ${persona.persona_type || "professional"}. `
+    
+    // Physical appearance
+    if (visualDNA.physical_build) {
+      prompt += `${visualDNA.physical_build}. `
+    }
+    if (visualDNA.face_shape) {
+      prompt += `${visualDNA.face_shape} face. `
+    }
+    if (visualDNA.hair) {
+      prompt += `${visualDNA.hair} hair. `
+    }
+    if (visualDNA.eyes) {
+      prompt += `${visualDNA.eyes} eyes. `
+    }
+    if (visualDNA.skin) {
+      prompt += `${visualDNA.skin} skin. `
+    }
+    
+    // Style and clothing
+    if (visualDNA.style_aesthetic) {
+      prompt += `Wearing ${visualDNA.style_aesthetic} clothing. `
+    } else if (persona.persona_type) {
+      prompt += `Dressed in elegant, professional attire appropriate for a ${persona.persona_type}. `
+    }
+    
+    // Distinctive features
+    if (visualDNA.distinctive_features && visualDNA.distinctive_features.length > 0) {
+      prompt += `Notable features: ${visualDNA.distinctive_features.join(", ")}. `
+    }
+    
+    // Setting and environment
+    if (setting.primary_location) {
+      prompt += `Setting: ${setting.primary_location}. `
+    } else if (persona.location) {
+      prompt += `Setting: ${persona.location}. `
+    }
+    
+    if (setting.lighting_style) {
+      prompt += `${setting.lighting_style} lighting. `
+    } else {
+      prompt += `Professional studio lighting, natural and flattering. `
+    }
+    
+    // Personality and expression
+    if (personality.core_traits && personality.core_traits.length > 0) {
+      prompt += `Expression should reflect: ${personality.core_traits.slice(0, 2).join(" and ")}. `
+    }
+    
+    // Final touches
+    prompt += `High-quality professional portrait photography, realistic, detailed, natural expression, looking directly at camera, confident and approachable demeanor. `
+    
+    // Add signature elements if available
+    if (persona.character_bible?.signature_elements && persona.character_bible.signature_elements.length > 0) {
+      prompt += `May include subtle elements suggesting: ${persona.character_bible.signature_elements.slice(0, 2).join(", ")}. `
+    }
+    
+    return prompt.trim()
+  }
+
+  const handleGenerateImage = async (persona: any) => {
+    const personaName = persona.name
+    setGeneratingImage((prev) => ({ ...prev, [personaName]: true }))
+    
+    try {
+      console.log("[v0] Generating image for persona:", personaName)
+      
+      // Build detailed prompt from persona data
+      const prompt = buildPersonaImagePrompt(persona)
+      console.log("[v0] Generated prompt:", prompt.substring(0, 200) + "...")
+      
+      // Call Nano Banana API
+      const response = await fetch("/api/image/nano-banana", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt,
+          aspectRatio: "1:1", // Square portrait
+        }),
+      })
+      
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || `Image generation failed: ${response.statusText}`)
+      }
+      
+      const result = await response.json()
+      console.log("[v0] Nano Banana response:", result)
+      
+      // Handle base64 image data
+      let imageUrl: string | null = null
+      
+      if (result.imageData) {
+        // Convert base64 to blob and upload
+        const base64Data = result.imageData.replace(/^data:image\/\w+;base64,/, "")
+        const binaryData = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0))
+        const blob = new Blob([binaryData], { type: "image/png" })
+        const file = new File([blob], `${personaName}-generated.png`, { type: "image/png" })
+        
+        // Upload to Vercel Blob
+        const formData = new FormData()
+        formData.append("file", file)
+        
+        const uploadResponse = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        })
+        
+        if (uploadResponse.ok) {
+          const { url } = await uploadResponse.json()
+          imageUrl = url
+          console.log("[v0] Uploaded generated image:", url)
+        } else {
+          throw new Error("Failed to upload generated image")
+        }
+      } else if (result.imageUrl) {
+        imageUrl = result.imageUrl
+      } else {
+        throw new Error("No image data or URL in response")
+      }
+      
+      // Save image URL to persona images
+      if (imageUrl) {
+        const saveResponse = await fetch("/api/persona-images", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            personaName,
+            imageUrl,
+          }),
+        })
+        
+        if (saveResponse.ok) {
+          const { personaImages: updatedImages } = await saveResponse.json()
+          setPersonaImages(updatedImages)
+          console.log("[v0] Generated image saved:", updatedImages)
+        }
+      }
+    } catch (error) {
+      console.error("[v0] Image generation error:", error)
+      alert(`Failed to generate image: ${error instanceof Error ? error.message : "Unknown error"}`)
+    } finally {
+      setGeneratingImage((prev) => ({ ...prev, [personaName]: false }))
+    }
   }
 
   const handleImageUpload = async (personaName: string, file: File) => {
@@ -189,8 +347,8 @@ export default function PersonasPage() {
                                 "
                               </p>
 
-                              {/* Upload button */}
-                              <div className="mb-4">
+                              {/* Upload and Generate buttons */}
+                              <div className="mb-4 flex gap-2 justify-center">
                                 <input
                                   type="file"
                                   accept="image/*"
@@ -206,8 +364,25 @@ export default function PersonasPage() {
                                   className="inline-flex items-center gap-2 px-3 py-1 text-sm bg-white/20 backdrop-blur-sm text-white rounded-md cursor-pointer hover:bg-white/30 transition-colors"
                                 >
                                   <Upload className="w-4 h-4" />
-                                  Upload Photo
+                                  Upload
                                 </label>
+                                <button
+                                  onClick={() => handleGenerateImage(persona)}
+                                  disabled={generatingImage[persona.name]}
+                                  className="inline-flex items-center gap-2 px-3 py-1 text-sm bg-white/20 backdrop-blur-sm text-white rounded-md hover:bg-white/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                  {generatingImage[persona.name] ? (
+                                    <>
+                                      <Loader2 className="w-4 h-4 animate-spin" />
+                                      Generating...
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Sparkles className="w-4 h-4" />
+                                      Generate
+                                    </>
+                                  )}
+                                </button>
                               </div>
 
                               {images.length > 1 && (
@@ -252,7 +427,7 @@ export default function PersonasPage() {
                               "
                             </p>
 
-                            <div className="mb-4">
+                            <div className="mb-4 flex gap-2 justify-center">
                               <input
                                 type="file"
                                 accept="image/*"
@@ -270,6 +445,23 @@ export default function PersonasPage() {
                                 <Upload className="w-4 h-4" />
                                 Upload Photo
                               </label>
+                              <button
+                                onClick={() => handleGenerateImage(persona)}
+                                disabled={generatingImage[persona.name]}
+                                className="inline-flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-600 rounded-md hover:bg-purple-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                {generatingImage[persona.name] ? (
+                                  <>
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                    Generating...
+                                  </>
+                                ) : (
+                                  <>
+                                    <Sparkles className="w-4 h-4" />
+                                    Generate Photo
+                                  </>
+                                )}
+                              </button>
                             </div>
                           </div>
                         </div>

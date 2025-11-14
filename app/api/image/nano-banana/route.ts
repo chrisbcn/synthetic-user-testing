@@ -51,16 +51,20 @@ export async function POST(request: NextRequest) {
     const sanitizedPrompt = sanitizeString(prompt, 5000)
 
     // Build Vertex AI API endpoint
+    const useApiKey = !!config.apiKey
     const endpoint = buildVertexAIEndpoint(
       config.projectId,
       config.location,
-      "gemini-2.5-flash-image-preview"
+      "gemini-2.5-flash-image-preview",
+      "generateContent",
+      config.apiKey
     )
 
     logger.debug("Calling Nano Banana API", {
       projectId: config.projectId,
       location: config.location,
       promptLength: sanitizedPrompt.length,
+      useApiKey,
     })
 
     // Prepare request payload
@@ -81,8 +85,8 @@ export async function POST(request: NextRequest) {
       },
     }
 
-    // Get authorization headers
-    const headers = await getVertexAIHeaders()
+    // Get authorization headers (API key is in URL, not headers)
+    const headers = await getVertexAIHeaders(useApiKey)
 
     const imageResponse = await fetch(endpoint, {
       method: "POST",
