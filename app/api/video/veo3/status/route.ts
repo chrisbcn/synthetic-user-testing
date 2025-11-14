@@ -31,13 +31,11 @@ export async function GET(request: NextRequest) {
 
     // Build endpoint for fetchPredictOperation
     const modelName = process.env.VERTEX_AI_MODEL_VEO3 || "veo-3.0-generate-preview"
-    const useApiKey = !!config.apiKey
     const endpoint = buildVertexAIEndpoint(
       config.projectId, 
       config.location, 
       modelName, 
-      "fetchPredictOperation",
-      config.apiKey
+      "fetchPredictOperation"
     )
 
     logger.debug("Checking Veo 3 operation status", { operationName, endpoint })
@@ -47,8 +45,8 @@ export async function GET(request: NextRequest) {
       operationName,
     }
 
-    // Get authorization headers (API key is in URL, not headers)
-    const headers = await getVertexAIHeaders(useApiKey)
+    // Get authorization headers (OAuth2 Bearer token - matching RENOIR pattern)
+    const headers = await getVertexAIHeaders()
 
     const statusResponse = await fetch(endpoint, {
       method: "POST",
