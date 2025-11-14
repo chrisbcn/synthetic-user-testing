@@ -11,30 +11,27 @@ echo "This script will help you set up Google Cloud environment variables"
 echo "for Vertex AI (Nano Banana, Veo 3) matching RENOIR wardrobe project."
 echo ""
 
-# Check if vercel CLI is installed
+# Check if vercel CLI is available (try npx first, then global)
+VERCEL_CMD="vercel"
 if ! command -v vercel &> /dev/null; then
-    echo "📦 Installing Vercel CLI..."
-    npm install -g vercel || {
-        echo "❌ Failed to install Vercel CLI. Please install manually:"
-        echo "   npm install -g vercel"
-        exit 1
-    }
+    echo "📦 Vercel CLI not found globally, using npx..."
+    VERCEL_CMD="npx vercel"
 fi
 
 # Check if logged in
 echo "🔐 Checking Vercel authentication..."
-if ! vercel whoami &> /dev/null; then
+if ! $VERCEL_CMD whoami &> /dev/null; then
     echo "Please log in to Vercel..."
-    vercel login
+    $VERCEL_CMD login
 fi
 
-echo "✅ Logged in as: $(vercel whoami)"
+echo "✅ Logged in as: $($VERCEL_CMD whoami)"
 echo ""
 
 # Set basic variables
 echo "📝 Setting basic variables..."
-echo "synth-users" | vercel env add GOOGLE_CLOUD_PROJECT_ID production preview development 2>/dev/null || echo "  ✓ Already set"
-echo "us-central1" | vercel env add GOOGLE_CLOUD_LOCATION production preview development 2>/dev/null || echo "  ✓ Already set"
+echo "synth-users" | $VERCEL_CMD env add GOOGLE_CLOUD_PROJECT_ID production preview development 2>/dev/null || echo "  ✓ Already set"
+echo "us-central1" | $VERCEL_CMD env add GOOGLE_CLOUD_LOCATION production preview development 2>/dev/null || echo "  ✓ Already set"
 
 echo ""
 echo "🔑 Service Account Credentials"
@@ -59,10 +56,10 @@ if [ -d "$RENOIR_DIR" ]; then
             
             echo ""
             echo "📤 Setting credentials from RENOIR..."
-            echo "$CLIENT_EMAIL" | vercel env add GOOGLE_CLIENT_EMAIL production preview development 2>/dev/null || echo "  ✓ Already set"
-            echo "$CLIENT_ID" | vercel env add GOOGLE_CLIENT_ID production preview development 2>/dev/null || echo "  ✓ Already set"
-            echo "$PRIVATE_KEY" | vercel env add GOOGLE_PRIVATE_KEY production preview development 2>/dev/null || echo "  ✓ Already set"
-            echo "$PRIVATE_KEY_ID" | vercel env add GOOGLE_PRIVATE_KEY_ID production preview development 2>/dev/null || echo "  ✓ Already set"
+            echo "$CLIENT_EMAIL" | $VERCEL_CMD env add GOOGLE_CLIENT_EMAIL production preview development 2>/dev/null || echo "  ✓ Already set"
+            echo "$CLIENT_ID" | $VERCEL_CMD env add GOOGLE_CLIENT_ID production preview development 2>/dev/null || echo "  ✓ Already set"
+            echo "$PRIVATE_KEY" | $VERCEL_CMD env add GOOGLE_PRIVATE_KEY production preview development 2>/dev/null || echo "  ✓ Already set"
+            echo "$PRIVATE_KEY_ID" | $VERCEL_CMD env add GOOGLE_PRIVATE_KEY_ID production preview development 2>/dev/null || echo "  ✓ Already set"
             
             echo ""
             echo "✅ All credentials set from RENOIR project!"
@@ -78,27 +75,27 @@ echo "(You can find these in your service account JSON file)"
 echo ""
 
 read -p "GOOGLE_CLIENT_EMAIL: " CLIENT_EMAIL
-echo "$CLIENT_EMAIL" | vercel env add GOOGLE_CLIENT_EMAIL production preview development
+echo "$CLIENT_EMAIL" | $VERCEL_CMD env add GOOGLE_CLIENT_EMAIL production preview development
 
 read -p "GOOGLE_CLIENT_ID: " CLIENT_ID
-echo "$CLIENT_ID" | vercel env add GOOGLE_CLIENT_ID production preview development
+echo "$CLIENT_ID" | $VERCEL_CMD env add GOOGLE_CLIENT_ID production preview development
 
 echo ""
 echo "GOOGLE_PRIVATE_KEY (paste the entire key including BEGIN/END lines):"
 echo "Press Enter after pasting, then Ctrl+D to finish:"
 PRIVATE_KEY=$(cat)
-echo "$PRIVATE_KEY" | vercel env add GOOGLE_PRIVATE_KEY production preview development
+echo "$PRIVATE_KEY" | $VERCEL_CMD env add GOOGLE_PRIVATE_KEY production preview development
 
 read -p "GOOGLE_PRIVATE_KEY_ID (optional, press Enter to skip): " PRIVATE_KEY_ID
 if [ ! -z "$PRIVATE_KEY_ID" ]; then
-    echo "$PRIVATE_KEY_ID" | vercel env add GOOGLE_PRIVATE_KEY_ID production preview development
+    echo "$PRIVATE_KEY_ID" | $VERCEL_CMD env add GOOGLE_PRIVATE_KEY_ID production preview development
 fi
 
 echo ""
 echo "✅ All environment variables set!"
 echo ""
 echo "📋 Summary:"
-vercel env ls | grep GOOGLE || echo "  (Run 'vercel env ls' to see all variables)"
+$VERCEL_CMD env ls | grep GOOGLE || echo "  (Run '$VERCEL_CMD env ls' to see all variables)"
 echo ""
 echo "🚀 Next steps:"
 echo "   1. Your project will auto-redeploy with new variables"

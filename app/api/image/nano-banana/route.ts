@@ -55,7 +55,12 @@ export async function POST(request: NextRequest) {
       throw new AppError("Prompt is required", 400, "MISSING_PROMPT")
     }
 
-    const sanitizedPrompt = sanitizeString(prompt, 5000)
+    // Add aspect ratio to prompt (not in generationConfig - matching RENOIR pattern)
+    let finalPrompt = sanitizeString(prompt, 5000)
+    if (aspectRatio) {
+      const aspectRatioText = aspectRatio === "1:1" ? "square (1:1)" : aspectRatio === "16:9" ? "landscape (16:9)" : "portrait (9:16)"
+      finalPrompt = `${finalPrompt}\n\nImage aspect ratio: ${aspectRatioText}`
+    }
 
     // Build Vertex AI API endpoint (matching RENOIR pattern)
     // Model name: gemini-2.5-flash-image (not -preview)
@@ -69,25 +74,28 @@ export async function POST(request: NextRequest) {
     logger.debug("Calling Nano Banana API", {
       projectId: config.projectId,
       location: config.location,
-      promptLength: sanitizedPrompt.length,
+      promptLength: finalPrompt.length,
       endpoint,
+      aspectRatio,
     })
 
-    // Prepare request payload
+    // Prepare request payload (matching RENOIR pattern - no aspectRatio in generationConfig)
     const requestPayload = {
       contents: [
         {
+          role: "user",
           parts: [
             {
-              text: sanitizedPrompt,
+              text: finalPrompt,
             },
           ],
         },
       ],
       generationConfig: {
         temperature: 0.7,
-        maxOutputTokens: 1000,
-        aspectRatio: aspectRatio,
+        topK: 40,
+        topP: 0.95,
+        maxOutputTokens: 32768, // RENOIR uses 32768 for image generation
       },
     }
 
@@ -112,10 +120,45 @@ export async function POST(request: NextRequest) {
 
     const imageResult = await imageResponse.json()
 
-    // Extract image URL or base64 data from response
-    // Note: Adjust based on actual API response structure
-    const imageUrl = imageResult.imageUrl || imageResult.image?.uri || null
-    const imageData = imageResult.imageData || imageResult.image?.bytes || null
+    // Extract image from response (matching RENOIR pattern)
+    let imageData: string | null = null
+    let imageUrl: string | null = null
+
+    if (imageResult.candidates && imageResult.candidates.length > 0) {
+      const candidate = imageResult.candidates[0]
+      
+      if (candidate.content && candidate.content.parts) {
+        for (const part of candidate.content.parts) {
+          // Check for inline_data (new format)
+          if (part.inline_data && part.inline_data.data) {
+            imageData = `data:${part.inline_data.mime_type || "image/png"};base64,${part.inline_data.data}`
+            logger.info("Nano Banana image generated successfully (inline_data format)")
+            break
+          }
+          // Check for inlineData (alternate format)
+          if (part.inlineData && part.inlineData.data) {
+            imageData = `data:${part.inlineData.mimeType || "image/png"};base64,${part.inlineData.data}`
+            logger.info("Nano Banana image generated successfully (inlineData format)")
+            break
+          }
+        }
+      }
+    }
+
+    // Fallback to old format if needed
+    if (!imageData) {
+      imageUrl = imageResult.imageUrl || imageResult.image?.uri || null
+      imageData = imageResult.imageData || imageResult.image?.bytes || null
+    }
+
+    if (!imageData && !imageUrl) {
+      logger.error("No image data found in Nano Banana response", { imageResult })
+      throw new AppError(
+        "No image data found in Nano Banana API response",
+        500,
+        "NANO_BANANA_NO_IMAGE"
+      )
+    }
 
     logger.info("Nano Banana image generated successfully")
 
@@ -123,9 +166,9 @@ export async function POST(request: NextRequest) {
       success: true,
       message: "Image generated successfully with Nano Banana!",
       imageUrl,
-      imageData, // Base64 encoded image if provided
+      imageData, // Base64 encoded image data
       provider: "nano-banana",
-      prompt: sanitizedPrompt,
+      prompt: finalPrompt,
       aspectRatio,
       generatedAt: new Date().toISOString(),
     })
