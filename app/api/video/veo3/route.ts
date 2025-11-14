@@ -5,12 +5,19 @@ import { getGoogleCloudConfig, buildVertexAIEndpoint, getVertexAIHeaders } from 
 /**
  * Google Cloud Vertex AI Veo 3 Video Generation API
  * 
- * Endpoint: https://aiplatform.googleapis.com/v1/projects/{PROJECT_ID}/locations/{LOCATION}/publishers/google/models/veo-3.1-generate-preview:generateContent
+ * Veo 3 uses a long-running operation pattern:
+ * 1. POST to :predictLongRunning to start generation
+ * 2. Poll :fetchPredictOperation to check status
+ * 
+ * Endpoint: https://{LOCATION}-aiplatform.googleapis.com/v1/projects/{PROJECT_ID}/locations/{LOCATION}/publishers/google/models/veo-3.0-generate-preview:predictLongRunning
  * 
  * Required environment variables:
  * - GOOGLE_CLOUD_PROJECT_ID: Your GCP project ID
  * - GOOGLE_APPLICATION_CREDENTIALS: Path to service account JSON (or use ADC)
  * - Or GOOGLE_CLOUD_ACCESS_TOKEN: Access token for authentication
+ * 
+ * Optional:
+ * - VERTEX_AI_STORAGE_BUCKET: GCS bucket for video storage (if not provided, base64 is returned)
  */
 
 interface Veo3Request {
@@ -95,49 +102,66 @@ SETTING:
 - Mood: ${setting?.mood_atmosphere || "professional yet approachable"}`
     }
 
-    // Build Vertex AI API endpoint
-    // Veo 3 model IDs (as of July 2025):
-    // - veo-3.0-generate-001 (standard)
-    // - veo-3.0-fast-generate-001 (faster)
-    // The -preview versions may require allowlist access
-    const modelName = process.env.VERTEX_AI_MODEL_VEO3 || "veo-3.0-generate-001"
-    const endpoint = buildVertexAIEndpoint(config.projectId, config.location, modelName)
+    // Build Vertex AI API endpoint for Veo 3
+    // Model name from documentation: veo-3.0-generate-preview
+    const modelName = process.env.VERTEX_AI_MODEL_VEO3 || "veo-3.0-generate-preview"
+    const endpoint = buildVertexAIEndpoint(config.projectId, config.location, modelName, "predictLongRunning")
+    
+    // Map aspect ratio to resolution
+    // Veo 3 supports: "1024x768", "768x1024", "1280x768", "768x1280", "1280x1024", "1024x1280"
+    const resolutionMap: Record<string, string> = {
+      "16:9": "1280x768",
+      "9:16": "768x1280",
+      "1:1": "1024x1024", // May need to use closest supported
+    }
+    const resolution = resolutionMap[aspectRatio] || "1280x768"
+    
+    // Optional: GCS bucket for video storage
+    // If not provided, base64 encoded video bytes are returned
+    const storageUri = process.env.VERTEX_AI_STORAGE_BUCKET 
+      ? `gs://${process.env.VERTEX_AI_STORAGE_BUCKET}/veo3-videos/`
+      : undefined
     
     logger.debug("Veo 3 endpoint", { 
       endpoint, 
       modelName,
       projectId: config.projectId, 
-      location: config.location 
-    })
-
-    logger.debug("Calling Veo 3 API", {
-      projectId: config.projectId,
       location: config.location,
-      promptLength: veo3Prompt.length,
+      resolution,
+      hasStorageUri: !!storageUri
     })
 
-    // Prepare request payload for Veo 3
-    // Note: Vertex AI generateContent API doesn't support videoConfig field
-    // Video parameters (duration, aspectRatio) should be included in the prompt
-    const requestPayload = {
-      contents: [
+    // Prepare request payload for Veo 3 predictLongRunning API
+    // Format: { instances: [{ prompt: "..." }], parameters: { ... } }
+    const requestPayload: {
+      instances: Array<{ prompt: string }>
+      parameters: {
+        storageUri?: string
+        sampleCount: number
+        resolution: string
+      }
+    } = {
+      instances: [
         {
-          parts: [
-            {
-              text: veo3Prompt,
-            },
-          ],
+          prompt: veo3Prompt,
         },
       ],
-      generationConfig: {
-        temperature: 0.7,
-        maxOutputTokens: 2000, // Increased for video generation
+      parameters: {
+        sampleCount: 1, // Generate 1 video (can be 1-2)
+        resolution,
       },
+    }
+    
+    // Add storage URI if configured
+    if (storageUri) {
+      requestPayload.parameters.storageUri = storageUri
     }
     
     logger.debug("Veo 3 request payload", {
       promptLength: veo3Prompt.length,
-      hasGenerationConfig: !!requestPayload.generationConfig,
+      resolution,
+      sampleCount: requestPayload.parameters.sampleCount,
+      hasStorageUri: !!storageUri,
     })
 
     // Get authorization headers
@@ -161,27 +185,43 @@ SETTING:
 
     const veoResult = await veoResponse.json()
 
-    // Extract video URL or task ID from response
-    // Note: Veo 3 API response structure may vary - adjust based on actual API response
-    const videoUrl = veoResult.videoUrl || veoResult.video?.uri || null
-    const taskId = veoResult.taskId || veoResult.operation?.name || null
-    const status = videoUrl ? "completed" : "generating"
+    // Veo 3 predictLongRunning returns an operation name
+    // Format: "projects/{PROJECT_ID}/locations/{LOCATION}/publishers/google/models/veo-3.0-generate-preview/operations/{OPERATION_ID}"
+    const operationName = veoResult.name || veoResult.operation?.name || null
+    
+    if (!operationName) {
+      logger.error("Veo 3 response missing operation name", { veoResult })
+      throw new AppError(
+        "Veo 3 API did not return an operation name",
+        500,
+        "VEO3_MISSING_OPERATION"
+      )
+    }
 
-    logger.info("Veo 3 video generation initiated", { taskId, status })
+    // Extract operation ID from full operation name
+    const operationId = operationName.split("/").pop() || null
 
+    logger.info("Veo 3 video generation initiated", { 
+      operationName, 
+      operationId,
+      status: "generating" 
+    })
+
+    // Return operation details - client will need to poll for completion
     return NextResponse.json({
       success: true,
-      message: status === "completed" 
-        ? "Video generated successfully with Veo 3!" 
-        : "Video generation started with Veo 3. This may take a few minutes.",
-      videoUrl,
-      taskId,
-      status,
+      message: "Video generation started with Veo 3. This may take a few minutes. Use the operation name to check status.",
+      operationName,
+      operationId,
+      status: "generating",
       provider: "veo-3",
       prompt: veo3Prompt,
       duration,
       aspectRatio,
+      resolution,
       generatedAt: new Date().toISOString(),
+      // Include endpoint for polling
+      pollEndpoint: `/api/video/veo3/status?operationName=${encodeURIComponent(operationName)}`,
     })
   } catch (error) {
     logger.error("Veo 3 video generation error", error)

@@ -129,9 +129,18 @@ export async function getGoogleCloudConfig(): Promise<GoogleCloudConfig | null> 
 export function buildVertexAIEndpoint(
   projectId: string,
   location: string,
-  model: string
+  model: string,
+  method: "generateContent" | "predictLongRunning" | "fetchPredictOperation" = "generateContent"
 ): string {
-  return `https://aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}:generateContent`
+  const baseUrl = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}`
+  
+  if (method === "predictLongRunning") {
+    return `${baseUrl}:predictLongRunning`
+  } else if (method === "fetchPredictOperation") {
+    return `${baseUrl}:fetchPredictOperation`
+  }
+  
+  return `${baseUrl}:generateContent`
 }
 
 /**
