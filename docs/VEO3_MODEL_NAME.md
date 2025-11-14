@@ -1,24 +1,17 @@
 # Veo 3 Model Name Issue
 
-## Current Error
+## ✅ Correct Model Name
 
-```
-Publisher Model `projects/synth-users/locations/us-central1/publishers/google/models/veo-3.1-generate-preview` not found.
-```
+From Vertex AI Model Garden:
+- **Model ID:** `publishers/google/models/veo-3.0-generate-preview`
+- **Version name:** `google/veo-3.0-generate-preview`
+- **Model name to use:** `veo-3.0-generate-preview`
 
-## Possible Solutions
+The code now uses `veo-3.0-generate-preview` as the default.
 
-### 1. Try Different Model Names
-
-The model name might be:
-- `veo-3-generate` (most likely)
-- `veo-3-generate-preview`
-- `veo3-generate`
-- `veo-3.0-generate`
-
-You can set a custom model name via environment variable:
+You can override via environment variable:
 ```bash
-VERTEX_AI_MODEL_VEO3=veo-3-generate
+VERTEX_AI_MODEL_VEO3=veo-3.0-generate-preview
 ```
 
 ### 2. Veo 3 May Require Allowlist Access
