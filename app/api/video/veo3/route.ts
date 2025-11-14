@@ -96,12 +96,9 @@ SETTING:
     }
 
     // Build Vertex AI API endpoint
-    // Note: Veo 3 model names to try:
-    // - veo-3-generate (most likely)
-    // - veo-3-generate-preview
-    // - veo3-generate
-    // If model not found, may need allowlist access or different endpoint
-    const modelName = process.env.VERTEX_AI_MODEL_VEO3 || "veo-3-generate"
+    // Model ID from Vertex AI Model Garden: publishers/google/models/veo-3.0-generate-preview
+    // Version name: google/veo-3.0-generate-preview
+    const modelName = process.env.VERTEX_AI_MODEL_VEO3 || "veo-3.0-generate-preview"
     const endpoint = buildVertexAIEndpoint(config.projectId, config.location, modelName)
     
     logger.debug("Veo 3 endpoint", { 
