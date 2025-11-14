@@ -67,6 +67,14 @@ export async function POST(request: NextRequest) {
     // Build comprehensive Veo 3 prompt
     let veo3Prompt = sanitizeString(prompt, 5000)
 
+    // Add video specifications to prompt (since API doesn't support videoConfig)
+    veo3Prompt = `${veo3Prompt}
+
+VIDEO SPECIFICATIONS:
+- Duration: ${duration} seconds
+- Aspect Ratio: ${aspectRatio}
+- Format: High quality video`
+
     // Enhance prompt with persona characteristics if available
     if (persona?.character_bible?.veo3_delivery_characteristics) {
       const delivery = persona.character_bible.veo3_delivery_characteristics
@@ -101,6 +109,8 @@ SETTING:
     })
 
     // Prepare request payload for Veo 3
+    // Note: Vertex AI generateContent API doesn't support videoConfig field
+    // Video parameters (duration, aspectRatio) should be included in the prompt
     const requestPayload = {
       contents: [
         {
@@ -113,13 +123,14 @@ SETTING:
       ],
       generationConfig: {
         temperature: 0.7,
-        maxOutputTokens: 1000,
-      },
-      videoConfig: {
-        duration: duration,
-        aspectRatio: aspectRatio,
+        maxOutputTokens: 2000, // Increased for video generation
       },
     }
+    
+    logger.debug("Veo 3 request payload", {
+      promptLength: veo3Prompt.length,
+      hasGenerationConfig: !!requestPayload.generationConfig,
+    })
 
     // Get authorization headers
     const headers = await getVertexAIHeaders()
