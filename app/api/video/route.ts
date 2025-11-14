@@ -1,19 +1,60 @@
 import { type NextRequest, NextResponse } from "next/server"
+import { logger, AppError, createErrorResponse, sanitizeString } from "@/lib/utils"
 
 export async function POST(request: NextRequest) {
   try {
-    const { prompt: videoPrompt, persona, responseText } = await request.json()
+    const { prompt: videoPrompt, persona, responseText, provider = "auto" } = await request.json()
 
     const runwayApiKey = process.env.RUNWAY_API_KEY
     const geminiApiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY
+    const googleCloudProjectId = process.env.GOOGLE_CLOUD_PROJECT_ID
+    const googleCloudAccessToken = process.env.GOOGLE_CLOUD_ACCESS_TOKEN
 
-    console.log("[v0] API Keys available:", {
-      runway: !!runwayApiKey,
-      gemini: !!geminiApiKey,
+    logger.info("Video generation API called", {
+      provider,
+      hasRunway: !!runwayApiKey,
+      hasGemini: !!geminiApiKey,
+      hasVeo3: !!googleCloudProjectId,
     })
 
+    // Try Veo 3 first if Google Cloud is configured and requested
+    if ((provider === "veo3" || provider === "auto") && googleCloudProjectId) {
+      logger.info("Attempting video generation with Veo 3")
+
+      try {
+        const veo3Response = await fetch(`${request.nextUrl.origin}/api/video/veo3`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            prompt: videoPrompt,
+            persona,
+            responseText,
+            duration: 10,
+            aspectRatio: "16:9",
+          }),
+        })
+
+        if (veo3Response.ok) {
+          const veo3Result = await veo3Response.json()
+          if (veo3Result.success) {
+            logger.info("Veo 3 video generation successful")
+            return NextResponse.json({
+              ...veo3Result,
+              provider: "veo-3",
+            })
+          }
+        } else {
+          logger.warn("Veo 3 generation failed, falling back to other providers")
+        }
+      } catch (veo3Error) {
+        logger.warn("Veo 3 error, falling back to other providers", veo3Error)
+      }
+    }
+
     if (runwayApiKey) {
-      console.log("[v0] Attempting real video generation via Runway ML")
+      logger.info("Attempting real video generation via Runway ML")
 
       try {
         const videoGenerationPrompt = `${persona.physicalTraits?.appearance || "Professional person"}, ${persona.age} years old, speaking directly to camera in a warm, welcoming environment. ${persona.personality || "Confident and articulate"}. Setting: cozy living room with soft natural lighting from large windows, or luxurious walk-in wardrobe with warm ambient lighting and rich textures, or sunny outdoor terrace with golden hour lighting, or beautifully appointed home office with warm wood tones and soft lamp lighting. Quote: "${responseText}"`
@@ -36,7 +77,7 @@ export async function POST(request: NextRequest) {
 
         if (runwayResponse.ok) {
           const runwayResult = await runwayResponse.json()
-          console.log("[v0] Runway ML video generation initiated:", runwayResult.id)
+          logger.info("Runway ML video generation initiated", { taskId: runwayResult.id })
 
           const videoData = {
             success: true,
@@ -59,15 +100,15 @@ Once complete, the video will be available for download.`,
           return NextResponse.json(videoData)
         } else {
           const errorText = await runwayResponse.text()
-          console.log("[v0] Runway ML failed, falling back to prompt generation:", errorText)
+          logger.warn("Runway ML failed, falling back to prompt generation", { error: errorText })
         }
       } catch (runwayError) {
-        console.log("[v0] Runway ML error, falling back to prompt generation:", runwayError)
+        logger.warn("Runway ML error, falling back to prompt generation", runwayError)
       }
     }
 
     if (!geminiApiKey) {
-      console.log("[v0] No API keys found")
+      logger.warn("No API keys found for video generation")
       const mockVideoData = {
         success: false,
         error:
@@ -90,7 +131,7 @@ Or add GEMINI_API_KEY for prompt generation only.`,
       return NextResponse.json(mockVideoData)
     }
 
-    console.log("[v0] Generating optimized video prompt (not actual video)")
+    logger.info("Generating optimized video prompt (not actual video)")
 
     const personaName = persona?.name || "Unknown Person"
     const personaAge = persona?.age || "Unknown age"
@@ -122,7 +163,7 @@ Generate a comprehensive Runway ML prompt that includes:
 
 Keep the prompt concise but descriptive, emphasizing the warm, inviting atmosphere that makes viewers feel welcome and comfortable.`
 
-    console.log("[v0] Making request to Gemini API...")
+    logger.debug("Making request to Gemini API")
 
     try {
       const response = await fetch(
@@ -150,11 +191,11 @@ Keep the prompt concise but descriptive, emphasizing the warm, inviting atmosphe
         },
       )
 
-      console.log("[v0] Gemini API response status:", response.status)
+      logger.debug("Gemini API response", { status: response.status })
 
       if (!response.ok) {
         const errorText = await response.text()
-        console.error("[v0] Gemini API error:", response.status, errorText)
+        logger.error("Gemini API error", { status: response.status, error: errorText })
 
         const errorData = {
           success: false,
@@ -171,7 +212,7 @@ Keep the prompt concise but descriptive, emphasizing the warm, inviting atmosphe
       }
 
       const geminiResponse = await response.json()
-      console.log("[v0] Video prompt generated successfully")
+      logger.info("Video prompt generated successfully")
 
       const generatedPrompt = geminiResponse.candidates?.[0]?.content?.parts?.[0]?.text || ""
 
@@ -202,7 +243,7 @@ ${generatedPrompt}`,
 
       return NextResponse.json(videoData)
     } catch (fetchError) {
-      console.error("[v0] Fetch error when calling Gemini API:", fetchError)
+      logger.error("Fetch error when calling Gemini API", fetchError)
 
       const errorData = {
         success: false,
@@ -219,19 +260,8 @@ ${generatedPrompt}`,
       return NextResponse.json(errorData)
     }
   } catch (error) {
-    console.error("[v0] Video generation error:", error)
-
-    const errorData = {
-      success: false,
-      error: `Video generation failed: ${error instanceof Error ? error.message : "Unknown error"}`,
-      message: "An error occurred during video generation.",
-      instructions: "Please try again or check your API configuration.",
-      videoUrl: null,
-      thumbnailUrl: null,
-      status: "error",
-      generatedAt: new Date().toISOString(),
-      provider: "error",
-    }
-    return NextResponse.json(errorData)
+    logger.error("Video generation error", error)
+    const errorResponse = createErrorResponse(error, "Failed to generate video")
+    return NextResponse.json(errorResponse, { status: errorResponse.statusCode || 500 })
   }
 }

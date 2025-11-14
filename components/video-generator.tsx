@@ -121,6 +121,7 @@ ${responseText}`
           prompt: videoPrompt,
           persona: persona,
           responseText: responseText,
+          provider: "auto", // Will try Veo 3 first if configured, then Runway, then prompt-only
         }),
       })
 

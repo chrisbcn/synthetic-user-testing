@@ -9,6 +9,13 @@ const OPTIONAL_ENV_VARS = [
   "SUPABASE_URL",
   "SUPABASE_ANON_KEY",
   "POSTGRES_URL",
+  // Google Cloud / Vertex AI
+  "GOOGLE_CLOUD_PROJECT_ID",
+  "GOOGLE_CLOUD_LOCATION",
+  "GOOGLE_CLOUD_ACCESS_TOKEN",
+  "GOOGLE_APPLICATION_CREDENTIALS",
+  // Video generation
+  "RUNWAY_API_KEY",
 ]
 
 export function validateEnvironment() {
