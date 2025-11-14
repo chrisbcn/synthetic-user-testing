@@ -12,8 +12,14 @@ const OPTIONAL_ENV_VARS = [
   // Google Cloud / Vertex AI
   "GOOGLE_CLOUD_PROJECT_ID",
   "GOOGLE_CLOUD_LOCATION",
+  "GOOGLE_CLOUD_REGION", // Alternative to GOOGLE_CLOUD_LOCATION (used in Renoir)
   "GOOGLE_CLOUD_ACCESS_TOKEN",
   "GOOGLE_APPLICATION_CREDENTIALS",
+  // Service account individual fields (like Renoir project)
+  "GOOGLE_CLIENT_ID",
+  "GOOGLE_CLIENT_EMAIL",
+  "GOOGLE_PRIVATE_KEY_ID",
+  "GOOGLE_PRIVATE_KEY",
   // Video generation
   "RUNWAY_API_KEY",
 ]

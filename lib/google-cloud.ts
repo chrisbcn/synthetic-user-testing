@@ -54,7 +54,37 @@ export async function getGoogleCloudAccessToken(): Promise<string | null> {
     logger.debug("Metadata server not available (not running on GCP)")
   }
 
-  // Method 3: Use Application Default Credentials (ADC)
+  // Method 3: Service account from individual env vars (like Renoir project)
+  if (
+    process.env.GOOGLE_CLIENT_EMAIL &&
+    process.env.GOOGLE_PRIVATE_KEY &&
+    process.env.GOOGLE_CLIENT_ID
+  ) {
+    try {
+      const credentials = {
+        client_email: process.env.GOOGLE_CLIENT_EMAIL,
+        private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, "\n"), // Handle escaped newlines
+        client_id: process.env.GOOGLE_CLIENT_ID,
+        project_id: process.env.GOOGLE_CLOUD_PROJECT_ID || process.env.GOOGLE_PROJECT_ID,
+      }
+
+      const auth = new GoogleAuth({
+        credentials,
+        scopes: ["https://www.googleapis.com/auth/cloud-platform"],
+      })
+      const client = await auth.getClient()
+      const accessToken = await client.getAccessToken()
+      
+      if (accessToken.token) {
+        logger.debug("Retrieved access token from service account env vars")
+        return accessToken.token
+      }
+    } catch (error) {
+      logger.warn("Failed to get access token from service account env vars", error)
+    }
+  }
+
+  // Method 4: Use Application Default Credentials (ADC) - works locally, not on Vercel
   try {
     const auth = new GoogleAuth({
       scopes: ["https://www.googleapis.com/auth/cloud-platform"],
