@@ -76,19 +76,48 @@ export async function POST(request: NextRequest) {
       supabaseUrl: process.env.SUPABASE_URL?.substring(0, 30) + "..."
     })
 
-    // Insert image URL into Supabase
-    const { data, error } = await supabase!
-      .from("persona_images")
-      .insert([
+    // Insert image URL into Supabase with error handling
+    let data, error
+    try {
+      const result = await supabase!
+        .from("persona_images")
+        .insert([
+          {
+            persona_name: personaName,
+            image_url: imageUrl,
+          },
+        ])
+        .select()
+      
+      data = result.data
+      error = result.error
+    } catch (fetchError: any) {
+      logger.error("Supabase fetch error", {
+        message: fetchError.message,
+        stack: fetchError.stack,
+        cause: fetchError.cause,
+        config: getSupabaseConfig(),
+      })
+      
+      return NextResponse.json(
         {
-          persona_name: personaName,
-          image_url: imageUrl,
+          error: "Network error connecting to Supabase",
+          details: fetchError.message,
+          hint: "Check SUPABASE_URL and SUPABASE_ANON_KEY are correct. Verify the table exists.",
+          config: getSupabaseConfig(),
         },
-      ])
-      .select()
+        { status: 500 }
+      )
+    }
 
     if (error) {
-      logger.error("Error saving persona image to Supabase", error)
+      logger.error("Error saving persona image to Supabase", {
+        error,
+        code: error.code,
+        message: error.message,
+        hint: error.hint,
+        details: error.details,
+      })
       
       // If table doesn't exist, provide helpful error
       if (error.code === "42P01" || error.message.includes("does not exist")) {
