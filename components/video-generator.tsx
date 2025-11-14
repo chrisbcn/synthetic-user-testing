@@ -136,11 +136,15 @@ ${responseText}`
 
       const responsePreview = responseText.substring(0, 50).replace(/\n/g, " ")
       
+      // Handle Veo 3 long-running operation
+      const isVeo3 = result.provider === "veo-3" || result.provider === "veo3"
+      const hasOperationName = !!result.operationName
+      
       // Determine status based on result
       let videoStatus: "completed" | "generating" | "error" = "completed"
       if (result.success === false) {
         videoStatus = "error"
-      } else if (result.status === "generating" || result.taskId) {
+      } else if (result.status === "generating" || hasOperationName || result.taskId) {
         videoStatus = "generating"
       } else if (result.videoUrl) {
         videoStatus = "completed"
@@ -160,7 +164,7 @@ ${responseText}`
         duration: result.duration || "30s",
         error: result.error,
         generatedPrompt: result.generatedPrompt || result.prompt || videoPrompt,
-        taskId: result.taskId, // Store task ID for polling if needed
+        taskId: result.operationName || result.taskId, // Store operation name for Veo 3 polling
         provider: result.provider, // Store provider info
       }
 
@@ -174,6 +178,12 @@ ${responseText}`
       setCurrentGeneratedPrompt(newVideo.generatedPrompt || newVideo.videoPrompt)
       setShowCurrentPrompt(true)
       onVideoGenerated?.(newVideo)
+
+      // Poll for Veo 3 video completion if operation started
+      if (isVeo3 && hasOperationName && videoStatus === "generating") {
+        console.log("[v0] Starting Veo 3 polling for operation:", result.operationName)
+        pollVeo3Status(result.operationName, newVideo.id)
+      }
 
       if (result.success !== false) {
         setTimeout(() => {
@@ -208,6 +218,86 @@ ${responseText}`
     } finally {
       setIsGenerating(false)
     }
+  }
+
+  const pollVeo3Status = async (operationName: string, videoId: string, maxAttempts = 60) => {
+    let attempts = 0
+    const pollInterval = 5000 // Poll every 5 seconds
+
+    const poll = async () => {
+      attempts++
+      
+      try {
+        const statusResponse = await fetch(
+          `/api/video/veo3/status?operationName=${encodeURIComponent(operationName)}`
+        )
+        const statusResult = await statusResponse.json()
+
+        console.log(`[v0] Veo 3 status check (attempt ${attempts}/${maxAttempts}):`, statusResult.status)
+
+        if (statusResult.status === "completed" && statusResult.videoUrl) {
+          // Update the video with the final URL
+          setGeneratedVideos((prev) =>
+            prev.map((video) =>
+              video.id === videoId
+                ? {
+                    ...video,
+                    status: "completed" as const,
+                    videoUrl: statusResult.videoUrl,
+                    thumbnailUrl: statusResult.thumbnailUrl,
+                  }
+                : video
+            )
+          )
+          console.log("[v0] Veo 3 video generation completed:", statusResult.videoUrl)
+          return
+        }
+
+        if (statusResult.status === "failed") {
+          // Update the video with error
+          setGeneratedVideos((prev) =>
+            prev.map((video) =>
+              video.id === videoId
+                ? {
+                    ...video,
+                    status: "error" as const,
+                    error: statusResult.error || "Video generation failed",
+                  }
+                : video
+            )
+          )
+          console.error("[v0] Veo 3 video generation failed:", statusResult.error)
+          return
+        }
+
+        // Continue polling if still generating
+        if (statusResult.status === "generating" && attempts < maxAttempts) {
+          setTimeout(poll, pollInterval)
+        } else if (attempts >= maxAttempts) {
+          // Timeout after max attempts
+          setGeneratedVideos((prev) =>
+            prev.map((video) =>
+              video.id === videoId
+                ? {
+                    ...video,
+                    status: "error" as const,
+                    error: "Video generation timed out. Please check status manually.",
+                  }
+                : video
+            )
+          )
+          console.warn("[v0] Veo 3 polling timeout after", maxAttempts, "attempts")
+        }
+      } catch (error) {
+        console.error("[v0] Veo 3 status check error:", error)
+        if (attempts < maxAttempts) {
+          setTimeout(poll, pollInterval)
+        }
+      }
+    }
+
+    // Start polling after initial delay
+    setTimeout(poll, pollInterval)
   }
 
   const handleCopyPrompt = async (prompt: string) => {
