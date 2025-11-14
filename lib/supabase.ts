@@ -16,16 +16,10 @@ if (!supabaseUrl || !supabaseAnonKey) {
   })
 }
 
-// Create Supabase client with proper configuration
+// Create Supabase client (matching RENOIR pattern - simple, no special options)
+// RENOIR creates client directly: createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY)
 export const supabase = supabaseUrl && supabaseAnonKey
-  ? createClient(supabaseUrl, supabaseAnonKey, {
-      auth: {
-        persistSession: false, // Don't persist sessions in serverless environment
-      },
-      global: {
-        fetch: fetch, // Use native fetch
-      },
-    })
+  ? createClient(supabaseUrl, supabaseAnonKey)
   : null
 
 /**
