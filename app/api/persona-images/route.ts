@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { supabase, isSupabaseConfigured } from "@/lib/supabase"
+import { supabase, isSupabaseConfigured, getSupabaseConfig } from "@/lib/supabase"
 import { logger } from "@/lib/utils"
 
 /**
@@ -59,12 +59,22 @@ export async function POST(request: NextRequest) {
 
     // If Supabase not configured, return error
     if (!isSupabaseConfigured()) {
-      logger.error("Supabase not configured, cannot save persona image")
+      const config = getSupabaseConfig()
+      logger.error("Supabase not configured, cannot save persona image", config)
       return NextResponse.json(
-        { error: "Supabase not configured. Please set SUPABASE_URL and SUPABASE_ANON_KEY" },
+        { 
+          error: "Supabase not configured. Please set SUPABASE_URL and SUPABASE_ANON_KEY",
+          config 
+        },
         { status: 500 }
       )
     }
+
+    logger.debug("Inserting persona image into Supabase", { 
+      personaName, 
+      imageUrl: imageUrl.substring(0, 50) + "...",
+      supabaseUrl: process.env.SUPABASE_URL?.substring(0, 30) + "..."
+    })
 
     // Insert image URL into Supabase
     const { data, error } = await supabase!
