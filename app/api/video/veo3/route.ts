@@ -105,7 +105,14 @@ SETTING:
     // Build Vertex AI API endpoint for Veo 3
     // Model name from documentation: veo-3.0-generate-preview
     const modelName = process.env.VERTEX_AI_MODEL_VEO3 || "veo-3.0-generate-preview"
-    const endpoint = buildVertexAIEndpoint(config.projectId, config.location, modelName, "predictLongRunning")
+    const useApiKey = !!config.apiKey
+    const endpoint = buildVertexAIEndpoint(
+      config.projectId, 
+      config.location, 
+      modelName, 
+      "predictLongRunning",
+      config.apiKey
+    )
     
     // Map aspect ratio to resolution
     // Veo 3 supports: "1024x768", "768x1024", "1280x768", "768x1280", "1280x1024", "1024x1280"
@@ -164,8 +171,8 @@ SETTING:
       hasStorageUri: !!storageUri,
     })
 
-    // Get authorization headers
-    const headers = await getVertexAIHeaders()
+    // Get authorization headers (API key is in URL, not headers)
+    const headers = await getVertexAIHeaders(useApiKey)
 
     const veoResponse = await fetch(endpoint, {
       method: "POST",

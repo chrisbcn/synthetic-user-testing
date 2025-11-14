@@ -2,10 +2,11 @@
  * Google Cloud / Vertex AI Authentication Utilities
  * 
  * Supports multiple authentication methods:
- * 1. Access token via GOOGLE_CLOUD_ACCESS_TOKEN env var
- * 2. Application Default Credentials (ADC) - for local dev with gcloud auth
- * 3. Service account JSON via GOOGLE_APPLICATION_CREDENTIALS
- * 4. Metadata server (when running on GCP)
+ * 1. API Key via GOOGLE_CLOUD_API_KEY or VERTEX_AI_API_KEY (simplest)
+ * 2. Access token via GOOGLE_CLOUD_ACCESS_TOKEN env var
+ * 3. Application Default Credentials (ADC) - for local dev with gcloud auth
+ * 4. Service account JSON via GOOGLE_APPLICATION_CREDENTIALS
+ * 5. Metadata server (when running on GCP)
  */
 
 import { GoogleAuth } from "google-auth-library"
@@ -15,6 +16,7 @@ export interface GoogleCloudConfig {
   projectId: string
   location: string
   accessToken?: string
+  apiKey?: string
 }
 
 /**
@@ -105,6 +107,14 @@ export async function getGoogleCloudAccessToken(): Promise<string | null> {
 }
 
 /**
+ * Get Google Cloud API key from environment
+ * Checks GOOGLE_CLOUD_API_KEY and VERTEX_AI_API_KEY
+ */
+export function getGoogleCloudApiKey(): string | null {
+  return process.env.GOOGLE_CLOUD_API_KEY || process.env.VERTEX_AI_API_KEY || null
+}
+
+/**
  * Get Google Cloud configuration
  */
 export async function getGoogleCloudConfig(): Promise<GoogleCloudConfig | null> {
@@ -114,47 +124,63 @@ export async function getGoogleCloudConfig(): Promise<GoogleCloudConfig | null> 
   }
 
   const location = process.env.GOOGLE_CLOUD_LOCATION || "us-central1"
+  const apiKey = getGoogleCloudApiKey()
   const accessToken = await getGoogleCloudAccessToken()
 
   return {
     projectId,
     location,
     accessToken: accessToken || undefined,
+    apiKey: apiKey || undefined,
   }
 }
 
 /**
  * Build Vertex AI API endpoint URL
+ * If apiKey is provided, adds it as a query parameter
  */
 export function buildVertexAIEndpoint(
   projectId: string,
   location: string,
   model: string,
-  method: "generateContent" | "predictLongRunning" | "fetchPredictOperation" = "generateContent"
+  method: "generateContent" | "predictLongRunning" | "fetchPredictOperation" = "generateContent",
+  apiKey?: string
 ): string {
   const baseUrl = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}`
   
+  let endpoint: string
   if (method === "predictLongRunning") {
-    return `${baseUrl}:predictLongRunning`
+    endpoint = `${baseUrl}:predictLongRunning`
   } else if (method === "fetchPredictOperation") {
-    return `${baseUrl}:fetchPredictOperation`
+    endpoint = `${baseUrl}:fetchPredictOperation`
+  } else {
+    endpoint = `${baseUrl}:generateContent`
   }
   
-  return `${baseUrl}:generateContent`
+  // Add API key as query parameter if provided
+  if (apiKey) {
+    endpoint += `?key=${encodeURIComponent(apiKey)}`
+  }
+  
+  return endpoint
 }
 
 /**
  * Get authorization headers for Vertex AI API
  * Returns headers with Authorization if token is available
+ * Note: If API key is used, it's added to the URL query string, not headers
  */
-export async function getVertexAIHeaders(): Promise<Record<string, string>> {
+export async function getVertexAIHeaders(useApiKey = false): Promise<Record<string, string>> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   }
 
-  const token = await getGoogleCloudAccessToken()
-  if (token) {
-    headers.Authorization = `Bearer ${token}`
+  // Only add Bearer token if not using API key
+  if (!useApiKey) {
+    const token = await getGoogleCloudAccessToken()
+    if (token) {
+      headers.Authorization = `Bearer ${token}`
+    }
   }
 
   return headers

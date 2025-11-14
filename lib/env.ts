@@ -14,6 +14,8 @@ const OPTIONAL_ENV_VARS = [
   "GOOGLE_CLOUD_LOCATION",
   "GOOGLE_CLOUD_REGION", // Alternative to GOOGLE_CLOUD_LOCATION (used in Renoir)
   "GOOGLE_CLOUD_ACCESS_TOKEN",
+  "GOOGLE_CLOUD_API_KEY", // API key from Vertex AI Studio (simplest auth method)
+  "VERTEX_AI_API_KEY", // Alternative name for API key
   "GOOGLE_APPLICATION_CREDENTIALS",
   // Service account individual fields (like Renoir project)
   "GOOGLE_CLIENT_ID",
