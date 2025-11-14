@@ -38,6 +38,8 @@ export function getSupabaseConfig() {
     hasUrl: !!supabaseUrl,
     hasKey: !!supabaseAnonKey,
     url: supabaseUrl ? `${supabaseUrl.substring(0, 30)}...` : null,
+    urlFull: supabaseUrl || null, // Full URL for debugging (safe to expose - it's public)
+    keyLength: supabaseAnonKey?.length || 0,
   }
 }
 
