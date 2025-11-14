@@ -1196,6 +1196,8 @@ export function InterviewRunner({ onSectionChange, onInterviewCompleted }: Inter
                 messages={conversationalMessages}
                 onSendMessage={handleConversationalMessage}
                 isPersonaTyping={isLoading}
+                interviewerName={selectedInterviewer?.name}
+                personaName={selectedPersona?.name}
               />
 
               {/* Message Input */}
@@ -1277,10 +1279,15 @@ export function InterviewRunner({ onSectionChange, onInterviewCompleted }: Inter
                       >
                         <div className="flex items-start gap-2">
                           {turn.speaker === "persona" && <span className="text-lg">{selectedPersona?.avatar}</span>}
-                          {turn.speaker === "interviewer" && (
+                          {(turn.speaker === "moderator" || turn.speaker === "interviewer") && (
                             <span className="text-lg">{selectedInterviewer?.avatar_emoji}</span>
                           )}
-                          <div>
+                          <div className="flex-1">
+                            <p className="text-xs font-medium mb-1 opacity-80">
+                              {turn.speaker === "moderator" || turn.speaker === "interviewer"
+                                ? selectedInterviewer?.name || "Researcher"
+                                : selectedPersona?.name || "Interviewee"}
+                            </p>
                             <p className="text-sm">{turn.message}</p>
                             <p
                               className={`text-xs mt-1 ${

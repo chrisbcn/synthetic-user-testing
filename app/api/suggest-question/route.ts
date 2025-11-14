@@ -1,7 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { generateText } from "ai"
-import { anthropic } from "@ai-sdk/anthropic"
+import Anthropic from "@anthropic-ai/sdk"
 import { logger, AppError, createErrorResponse, sanitizeString, validateRequired, isString } from "@/lib/utils"
+
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY || "",
+})
 
 interface SuggestQuestionRequestBody {
   lastInterviewerMsg?: string
@@ -72,13 +75,23 @@ Respond with ONLY the suggested question - no quotes, no explanations, no stage 
 
     logger.debug("Calling Claude API for question suggestion")
 
-    const result = await generateText({
-      model: anthropic("claude-3-haiku-20240307"),
-      prompt: systemPrompt,
-      maxTokens: 200,
+    const response = await anthropic.messages.create({
+      model: "claude-3-5-sonnet-20241022", // Upgraded from Haiku to Claude 3.5 Sonnet
+      // Note: If Claude 3.7 Sonnet becomes available, use: "claude-3-7-sonnet-20250219"
+      max_tokens: 300,
+      temperature: 0.8, // Higher for more creative question suggestions
+      messages: [
+        {
+          role: "user",
+          content: systemPrompt,
+        },
+      ],
     })
 
-    const suggestedQuestion = sanitizeString(result.text?.replace(/['"]/g, "").trim() || "", 500)
+    const suggestedQuestion = sanitizeString(
+      (response.content[0]?.type === "text" ? response.content[0].text : "").replace(/['"]/g, "").trim() || "",
+      500
+    )
 
     if (!suggestedQuestion) {
       throw new AppError("Failed to generate question suggestion", 500, "EMPTY_RESPONSE")

@@ -14,9 +14,18 @@ interface ConversationalChatProps {
   onSendMessage: (message: string) => void
   isPersonaTyping: boolean
   suggestedQuestion?: string
+  interviewerName?: string
+  personaName?: string
 }
 
-function ConversationalChat({ messages, onSendMessage, isPersonaTyping, suggestedQuestion }: ConversationalChatProps) {
+function ConversationalChat({
+  messages,
+  onSendMessage,
+  isPersonaTyping,
+  suggestedQuestion,
+  interviewerName,
+  personaName,
+}: ConversationalChatProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   // Auto-scroll to bottom when new messages are added
@@ -47,7 +56,9 @@ function ConversationalChat({ messages, onSendMessage, isPersonaTyping, suggeste
                     message.role === "interviewer" ? "text-blue-700" : "text-gray-700"
                   }`}
                 >
-                  {message.role === "interviewer" ? "Researcher" : "Interviewee"}
+                  {message.role === "interviewer"
+                    ? interviewerName || "Researcher"
+                    : personaName || "Interviewee"}
                 </span>
                 <span className="text-xs text-gray-500">{formatTime(message.timestamp)}</span>
               </div>
@@ -61,7 +72,7 @@ function ConversationalChat({ messages, onSendMessage, isPersonaTyping, suggeste
           <div className="w-full border-b border-gray-200">
             <div className="w-full px-6 py-4 bg-gray-50 border-l-4 border-l-gray-400">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-gray-700">Interviewee</span>
+                <span className="text-sm font-medium text-gray-700">{personaName || "Interviewee"}</span>
               </div>
               <div className="flex items-center space-x-2">
                 <div className="flex space-x-1">

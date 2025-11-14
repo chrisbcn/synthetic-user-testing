@@ -1,7 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { generateText } from "ai"
-import { anthropic } from "@ai-sdk/anthropic"
+import Anthropic from "@anthropic-ai/sdk"
 import { logger, AppError, createErrorResponse, sanitizeString, validateRequired, isObject, isArray, isString } from "@/lib/utils"
+
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY || "",
+})
 
 const requestTracker = new Map<string, { count: number; resetTime: number; lastRequest: number }>()
 const RATE_LIMIT_WINDOW = 60000 // 1 minute
@@ -34,18 +37,25 @@ function checkRateLimit(clientId: string): { allowed: boolean; retryAfter?: numb
   return { allowed: true }
 }
 
-async function makeClaudeAPICallWithRetry(systemPrompt: string, maxRetries = 3): Promise<string> {
+async function makeClaudeAPICallWithRetry(
+  messages: Array<{ role: "user" | "assistant"; content: string }>,
+  systemPrompt: string,
+  maxRetries = 3
+): Promise<string> {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       logger.debug(`Making Claude API call (attempt ${attempt}/${maxRetries})`)
 
-      const result = await generateText({
-        model: anthropic("claude-3-haiku-20240307"),
-        prompt: systemPrompt,
-        maxTokens: 1000,
+      const response = await anthropic.messages.create({
+        model: "claude-3-5-sonnet-20241022", // Upgraded from Haiku to Claude 3.5 Sonnet (much better quality)
+        // Note: If Claude 3.7 Sonnet becomes available, use: "claude-3-7-sonnet-20250219"
+        max_tokens: 2000, // Increased for more in-depth responses
+        temperature: 0.7, // Slightly higher for more natural conversation
+        system: systemPrompt,
+        messages: messages as any,
       })
 
-      const responseText = result.text || ""
+      const responseText = response.content[0]?.type === "text" ? response.content[0].text : ""
       logger.debug(`Claude API response received successfully`, { length: responseText.length })
 
       return responseText
@@ -66,12 +76,12 @@ async function makeClaudeAPICallWithRetry(systemPrompt: string, maxRetries = 3):
       await new Promise((resolve) => setTimeout(resolve, delay))
     }
   }
-  
+
   throw new AppError("Failed to generate response", 500, "CLAUDE_API_ERROR")
 }
 
 interface ConversationTurn {
-  speaker: "moderator" | "persona"
+  speaker: "moderator" | "persona" | "interviewer"
   message: string
   timestamp?: string | Date
 }
@@ -84,14 +94,23 @@ interface InterviewRequestBody {
     age?: number | string
     location?: string
     keyQuotes?: string[]
+    personality_profile?: {
+      core_traits?: string[]
+      communication_style?: string
+    }
   }
   scenario?: {
     name?: string
     description?: string
   }
+  interviewer?: {
+    name?: string
+    specialization?: string
+    interview_style?: string
+    expertise?: string[]
+  }
   message?: string
   conversationHistory?: ConversationTurn[]
-  interviewer?: unknown
   apiKey?: string
 }
 
@@ -154,78 +173,115 @@ export async function POST(request: NextRequest) {
     const personaBackground = sanitizeString(persona.background || "General user", 2000)
     const personaAge = typeof persona.age === "number" ? persona.age : Number.parseInt(String(persona.age || "30"))
     const personaLocation = sanitizeString(persona.location || "Unknown", 100)
-    const personaQuotes = isArray(persona.keyQuotes) 
-      ? persona.keyQuotes.filter(isString).map(q => sanitizeString(q, 500))
+    const personaQuotes = isArray(persona.keyQuotes)
+      ? persona.keyQuotes.filter(isString).map((q) => sanitizeString(q, 500))
       : []
+    const personaCommunicationStyle = persona.personality_profile?.communication_style || "natural and conversational"
+    const personaTraits = persona.personality_profile?.core_traits || []
 
     const scenarioName = sanitizeString(scenario.name || "Interview", 100)
     const scenarioDescription = sanitizeString(scenario.description || "General interview", 1000)
 
-    logger.debug("Request validated successfully", { personaName, scenarioName })
+    const interviewer = body.interviewer
+    const interviewerName = interviewer?.name ? sanitizeString(interviewer.name, 100) : null
+    const interviewerSpecialization = interviewer?.specialization ? sanitizeString(interviewer.specialization, 200) : null
+    const interviewerStyle = interviewer?.interview_style ? sanitizeString(interviewer.interview_style, 500) : null
 
-    // Build conversation context
-    let conversationContext = ""
+    logger.debug("Request validated successfully", { personaName, scenarioName, interviewerName })
+
+    // Build conversation history using proper Messages API format with clear speaker distinction
+    const messages: Array<{ role: "user" | "assistant"; content: string }> = []
+
     if (isArray(body.conversationHistory) && body.conversationHistory.length > 0) {
-      conversationContext = body.conversationHistory
-        .filter((turn): turn is ConversationTurn => 
-          isObject(turn) && 
-          (turn.speaker === "moderator" || turn.speaker === "persona") &&
+      for (const turn of body.conversationHistory) {
+        if (
+          isObject(turn) &&
+          (turn.speaker === "moderator" || turn.speaker === "interviewer" || turn.speaker === "persona") &&
           isString(turn.message)
-        )
-        .map((turn) => {
-          const speaker = turn.speaker === "moderator" ? "Researcher" : personaName
-          const message = sanitizeString(turn.message, 5000)
-          return `${speaker}: ${message}`
-        })
-        .join("\n")
+        ) {
+          const sanitizedMessage = sanitizeString(turn.message, 5000)
+
+          if (turn.speaker === "moderator" || turn.speaker === "interviewer") {
+            // Interviewer messages are "user" role with name label
+            const interviewerLabel = interviewerName || "Researcher"
+            messages.push({
+              role: "user",
+              content: `${interviewerLabel}: ${sanitizedMessage}`,
+            })
+          } else if (turn.speaker === "persona") {
+            // Persona responses are "assistant" role
+            messages.push({
+              role: "assistant",
+              content: sanitizedMessage,
+            })
+          }
+        }
+      }
     }
 
-    const systemPrompt = `You are ${personaName}, a ${personaAge}-year-old ${personaType} from ${personaLocation}.
+    // Add current interviewer message with name
+    const currentInterviewerLabel = interviewerName || "Researcher"
+    messages.push({
+      role: "user",
+      content: `${currentInterviewerLabel}: ${message}`,
+    })
 
-Background: ${personaBackground}
+    // Build comprehensive system prompt with interviewer context
+    let systemPrompt = `You are ${personaName}, a ${personaAge}-year-old ${personaType} from ${personaLocation}.
 
-${personaQuotes.length > 0 ? `Key quotes that represent your perspective: ${personaQuotes.join("; ")}` : ""}
+BACKGROUND:
+${personaBackground}
 
-You are having a thoughtful conversation with a researcher about ${scenarioName}: ${scenarioDescription}
+${personaTraits.length > 0 ? `CORE PERSONALITY TRAITS: ${personaTraits.join(", ")}` : ""}
+${personaQuotes.length > 0 ? `KEY QUOTES THAT REPRESENT YOUR PERSPECTIVE:\n${personaQuotes.map(q => `- "${q}"`).join("\n")}` : ""}
 
-CRITICAL INSTRUCTIONS - READ CAREFULLY:
+COMMUNICATION STYLE: ${personaCommunicationStyle}
 
-You are an intelligent, sophisticated person. Your responses must be:
-- DIRECT SPEECH ONLY - no actions, no stage directions, no "*anything*"
-- NATURAL and CONVERSATIONAL - like you're sitting across from someone having coffee
-- SUBSTANTIVE but CONCISE - 2-4 sentences that show real thought
-- CONFIDENT without being verbose - smart people don't need to prove it with big words
+INTERVIEW CONTEXT:
+You are participating in a professional user research interview about: ${scenarioName}
+${scenarioDescription ? `\nScenario Details: ${scenarioDescription}` : ""}
 
-SPEAKING STYLE:
-- Use everyday language with natural contractions: "I'm," "don't," "can't," "it's"
-- Be specific and concrete - share real examples from your experience
-- Express opinions clearly - you have well-formed views
-- If you disagree, say so directly and explain why
-- Sound like a real person, not a character in a play
+${interviewerName ? `INTERVIEWER: You are being interviewed by ${interviewerName}` : ""}
+${interviewerSpecialization ? `, a specialist in ${interviewerSpecialization}` : ""}
+${interviewerStyle ? `\nInterviewer Style: ${interviewerStyle}` : ""}
 
-ABSOLUTELY NEVER:
-- Use stage directions: NO "*smiles*", "*chuckles*", "*leans forward*", "*pauses*"
-- Use theatrical language: NO "indeed," "one might say," "as it were"
-- Be overly formal or pretentious
-- Ramble or use unnecessary words
-- Sound like you're performing or acting
+CRITICAL INSTRUCTIONS:
+
+1. RESPONSE STYLE:
+   - Use DIRECT SPEECH ONLY - no actions, no stage directions, no "*anything*"
+   - Be NATURAL and CONVERSATIONAL - like you're having a thoughtful discussion
+   - Be SUBSTANTIVE and THOROUGH - provide detailed, thoughtful responses (3-8 sentences typically)
+   - Share SPECIFIC EXAMPLES from your experience when relevant
+   - Express your OPINIONS CLEARLY - you have well-formed views based on your background
+
+2. SPEAKING STYLE:
+   - Use everyday language with natural contractions: "I'm," "don't," "can't," "it's"
+   - Be specific and concrete - reference real situations, preferences, and experiences
+   - If you disagree with something, say so directly and explain your reasoning
+   - Sound like a real person having a genuine conversation, not performing
+
+3. DEPTH AND ENGAGEMENT:
+   - Provide thoughtful, detailed responses that show real consideration
+   - Elaborate on your reasoning when asked follow-up questions
+   - Reference your background and experiences naturally
+   - Show engagement with the interviewer's questions
+
+4. ABSOLUTELY NEVER:
+   - Use stage directions: NO "*smiles*", "*chuckles*", "*leans forward*", "*pauses*"
+   - Use theatrical language: NO "indeed," "one might say," "as it were"
+   - Be overly formal or pretentious
+   - Give one-word or very short answers (unless specifically asked for a brief response)
+   - Sound like you're performing or acting
 
 EXAMPLE OF GOOD RESPONSE:
-"I don't think that approach would work for my lifestyle. I need pieces that transition from day to evening, and most of those suggestions are too casual for client meetings."
+"I've actually had mixed experiences with TheRealReal. On one hand, I appreciate the convenience and the wide selection - I've found some amazing vintage pieces there that I couldn't get anywhere else. But I've also had issues with how they handle authentication and presentation. I once received a Chanel bag that was clearly authentic but was presented so poorly that it made me question the whole process. That's why I'm interested in brand-managed resale - I think having the brand's direct involvement would give me more confidence in both authenticity and quality."
 
 EXAMPLE OF BAD RESPONSE:
 "*chuckles softly* Well, one might indeed consider that approach, though I must confess it doesn't quite align with my particular lifestyle requirements. *leans forward thoughtfully*"
 
-${conversationContext ? `Previous conversation:\n${conversationContext}\n\nContinue the conversation naturally:` : "Respond thoughtfully to:"}
+Remember: You are ${personaName}. Respond naturally as this person would, drawing on their background, values, and experiences.`
 
-Researcher: ${message}
-
-Your response (direct speech only, no stage directions):`
-
-    // Sanitize the prompt to prevent injection
-    const sanitizedPrompt = sanitizeString(systemPrompt, 50000)
-    
-    const claudeResponse = await makeClaudeAPICallWithRetry(sanitizedPrompt)
+    const claudeResponse = await makeClaudeAPICallWithRetry(messages, systemPrompt)
     const personaResponse = sanitizeString(claudeResponse || "I'm sorry, I couldn't generate a response.", 5000)
 
     logger.info("Interview response generated successfully")
