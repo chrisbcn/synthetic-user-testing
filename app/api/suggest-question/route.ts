@@ -76,8 +76,7 @@ Respond with ONLY the suggested question - no quotes, no explanations, no stage 
     logger.debug("Calling Claude API for question suggestion")
 
     const response = await anthropic.messages.create({
-      model: "claude-3-5-sonnet-20241022", // Upgraded from Haiku to Claude 3.5 Sonnet
-      // Note: If Claude 3.7 Sonnet becomes available, use: "claude-3-7-sonnet-20250219"
+      model: "claude-sonnet-4-20250514", // Latest Claude Sonnet 4 model
       max_tokens: 300,
       temperature: 0.8, // Higher for more creative question suggestions
       messages: [

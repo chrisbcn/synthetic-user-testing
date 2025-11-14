@@ -47,8 +47,7 @@ async function makeClaudeAPICallWithRetry(
       logger.debug(`Making Claude API call (attempt ${attempt}/${maxRetries})`)
 
       const response = await anthropic.messages.create({
-        model: "claude-3-5-sonnet-20241022", // Upgraded from Haiku to Claude 3.5 Sonnet (much better quality)
-        // Note: If Claude 3.7 Sonnet becomes available, use: "claude-3-7-sonnet-20250219"
+        model: "claude-sonnet-4-20250514", // Latest Claude Sonnet 4 model
         max_tokens: 2000, // Increased for more in-depth responses
         temperature: 0.7, // Slightly higher for more natural conversation
         system: systemPrompt,
