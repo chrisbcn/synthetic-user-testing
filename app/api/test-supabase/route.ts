@@ -48,6 +48,30 @@ export async function GET() {
     if (error) {
       logger.error("Supabase query error", { error, status })
       
+      // Also test direct fetch to isolate the issue
+      let directFetchTest: any = null
+      try {
+        const restUrl = `${process.env.SUPABASE_URL}/rest/v1/persona_images?select=count&limit=1`
+        const directResponse = await fetch(restUrl, {
+          headers: {
+            'apikey': process.env.SUPABASE_ANON_KEY!,
+            'Authorization': `Bearer ${process.env.SUPABASE_ANON_KEY}`,
+          },
+          signal: AbortSignal.timeout(5000),
+        })
+        directFetchTest = {
+          ok: directResponse.ok,
+          status: directResponse.status,
+          statusText: directResponse.statusText,
+        }
+      } catch (fetchErr: any) {
+        directFetchTest = {
+          error: fetchErr.message,
+          type: fetchErr.name,
+          cause: fetchErr.cause?.message,
+        }
+      }
+      
       return NextResponse.json(
         {
           success: false,
@@ -57,6 +81,7 @@ export async function GET() {
           hint: error.hint,
           status,
           config,
+          directFetchTest, // Test direct REST API call
         },
         { status: 500 }
       )
