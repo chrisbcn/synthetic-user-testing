@@ -22,6 +22,8 @@ const OPTIONAL_ENV_VARS = [
   "GOOGLE_PRIVATE_KEY",
   // Video generation
   "RUNWAY_API_KEY",
+  // Vertex AI model names (optional - defaults provided)
+  "VERTEX_AI_MODEL_VEO3",
 ]
 
 export function validateEnvironment() {
