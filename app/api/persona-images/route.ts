@@ -1,46 +1,131 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { promises as fs } from "fs"
-import path from "path"
+import { supabase, isSupabaseConfigured } from "@/lib/supabase"
+import { logger } from "@/lib/utils"
 
-const IMAGES_FILE = path.join(process.cwd(), "data", "persona-images.json")
-
+/**
+ * Get all persona images
+ * Returns data in format: { "Persona Name": ["url1", "url2", ...] }
+ */
 export async function GET() {
   try {
-    const data = await fs.readFile(IMAGES_FILE, "utf8")
-    return NextResponse.json(JSON.parse(data))
+    // If Supabase not configured, return empty object
+    if (!isSupabaseConfigured()) {
+      logger.warn("Supabase not configured, returning empty persona images")
+      return NextResponse.json({})
+    }
+
+    const { data, error } = await supabase!
+      .from("persona_images")
+      .select("persona_name, image_url")
+      .order("created_at", { ascending: false })
+
+    if (error) {
+      logger.error("Error fetching persona images from Supabase", error)
+      return NextResponse.json({})
+    }
+
+    // Transform to expected format: { "Persona Name": ["url1", "url2"] }
+    const personaImages: { [key: string]: string[] } = {}
+    
+    if (data) {
+      for (const row of data) {
+        if (!personaImages[row.persona_name]) {
+          personaImages[row.persona_name] = []
+        }
+        personaImages[row.persona_name].push(row.image_url)
+      }
+    }
+
+    return NextResponse.json(personaImages)
   } catch (error) {
-    // If file doesn't exist, return empty object
+    logger.error("Error in GET persona-images", error)
     return NextResponse.json({})
   }
 }
 
+/**
+ * Save a persona image URL
+ */
 export async function POST(request: NextRequest) {
   try {
     const { personaName, imageUrl } = await request.json()
 
-    let personaImages = {}
-    try {
-      const data = await fs.readFile(IMAGES_FILE, "utf8")
-      personaImages = JSON.parse(data)
-    } catch (error) {
-      // File doesn't exist yet, start with empty object
+    if (!personaName || !imageUrl) {
+      return NextResponse.json(
+        { error: "personaName and imageUrl are required" },
+        { status: 400 }
+      )
     }
 
-    // Add new image to persona's array
-    if (!personaImages[personaName]) {
-      personaImages[personaName] = []
+    // If Supabase not configured, return error
+    if (!isSupabaseConfigured()) {
+      logger.error("Supabase not configured, cannot save persona image")
+      return NextResponse.json(
+        { error: "Supabase not configured. Please set SUPABASE_URL and SUPABASE_ANON_KEY" },
+        { status: 500 }
+      )
     }
-    personaImages[personaName].push(imageUrl)
 
-    // Ensure data directory exists
-    await fs.mkdir(path.dirname(IMAGES_FILE), { recursive: true })
+    // Insert image URL into Supabase
+    const { data, error } = await supabase!
+      .from("persona_images")
+      .insert([
+        {
+          persona_name: personaName,
+          image_url: imageUrl,
+        },
+      ])
+      .select()
 
-    // Save updated data
-    await fs.writeFile(IMAGES_FILE, JSON.stringify(personaImages, null, 2))
+    if (error) {
+      logger.error("Error saving persona image to Supabase", error)
+      
+      // If table doesn't exist, provide helpful error
+      if (error.code === "42P01" || error.message.includes("does not exist")) {
+        return NextResponse.json(
+          { 
+            error: "persona_images table does not exist. Please run the migration: supabase-migration-persona-images.sql",
+            details: error.message 
+          },
+          { status: 500 }
+        )
+      }
+      
+      return NextResponse.json(
+        { error: "Failed to save image", details: error.message },
+        { status: 500 }
+      )
+    }
+
+    // Fetch all images for this persona to return updated list
+    const { data: allImages, error: fetchError } = await supabase!
+      .from("persona_images")
+      .select("persona_name, image_url")
+      .order("created_at", { ascending: false })
+
+    if (fetchError) {
+      logger.error("Error fetching updated persona images", fetchError)
+    }
+
+    // Transform to expected format
+    const personaImages: { [key: string]: string[] } = {}
+    if (allImages) {
+      for (const row of allImages) {
+        if (!personaImages[row.persona_name]) {
+          personaImages[row.persona_name] = []
+        }
+        personaImages[row.persona_name].push(row.image_url)
+      }
+    }
+
+    logger.info("Persona image saved successfully", { personaName, imageUrl })
 
     return NextResponse.json({ success: true, personaImages })
   } catch (error) {
-    console.error("Error saving persona image:", error)
-    return NextResponse.json({ error: "Failed to save image" }, { status: 500 })
+    logger.error("Error saving persona image", error)
+    return NextResponse.json(
+      { error: "Failed to save image", details: error instanceof Error ? error.message : "Unknown error" },
+      { status: 500 }
+    )
   }
 }
