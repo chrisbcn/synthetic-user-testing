@@ -121,16 +121,18 @@ ${responseText}`
           prompt: videoPrompt,
           persona: persona,
           responseText: responseText,
-          provider: "auto", // Will try Veo 3 first if configured, then Runway, then prompt-only
+          provider: "veo3", // Use Veo 3 directly - don't fall back to prompt generation
         }),
       })
 
-      if (!response.ok) {
-        throw new Error(`Video prompt generation failed: ${response.statusText}`)
-      }
-
       const result = await response.json()
       console.log("[v0] Video API response:", result)
+
+      if (!response.ok || result.success === false) {
+        // Show the actual error from the API
+        const errorMessage = result.error || result.message || `Video generation failed: ${response.statusText}`
+        throw new Error(errorMessage)
+      }
 
       const responsePreview = responseText.substring(0, 50).replace(/\n/g, " ")
       
@@ -179,7 +181,12 @@ ${responseText}`
         }, 100)
       }
     } catch (error) {
-      console.error("Video prompt generation failed:", error)
+      console.error("Video generation failed:", error)
+
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred"
+      
+      // Show error to user
+      alert(`Video generation failed: ${errorMessage}\n\nPlease check:\n1. Google Cloud configuration\n2. Veo 3 API access\n3. Network connection`)
 
       const responsePreview = selectedResponse.substring(0, 50).replace(/\n/g, " ")
       const errorVideo: VideoPullquote = {
@@ -191,11 +198,13 @@ ${responseText}`
         status: "error",
         createdAt: new Date(),
         title: `${persona?.name || "Unknown Persona"}: "${responsePreview}${selectedResponse.length > 50 ? "..." : ""}" (Failed)`,
-        error: error instanceof Error ? error.message : "Unknown error occurred",
+        error: errorMessage,
       }
 
       setGeneratedVideos((prev) => [...prev, errorVideo])
       setHasGeneratedPrompts(true)
+      setShowCurrentPrompt(true)
+      setCurrentGeneratedPrompt(customPrompt || generateVideoPrompt(responseText))
     } finally {
       setIsGenerating(false)
     }
