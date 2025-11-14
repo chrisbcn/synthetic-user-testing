@@ -1,12 +1,15 @@
 /**
  * Google Cloud / Vertex AI Authentication Utilities
  * 
- * Supports multiple authentication methods:
- * 1. API Key via GOOGLE_CLOUD_API_KEY or VERTEX_AI_API_KEY (simplest)
- * 2. Access token via GOOGLE_CLOUD_ACCESS_TOKEN env var
- * 3. Application Default Credentials (ADC) - for local dev with gcloud auth
- * 4. Service account JSON via GOOGLE_APPLICATION_CREDENTIALS
+ * Supports multiple authentication methods (matching RENOIR wardrobe project):
+ * 1. Service account credentials (GOOGLE_CLIENT_EMAIL, GOOGLE_PRIVATE_KEY, GOOGLE_CLIENT_ID) - ✅ Recommended for Vertex AI
+ * 2. Service account JSON via GOOGLE_APPLICATION_CREDENTIALS
+ * 3. Access token via GOOGLE_CLOUD_ACCESS_TOKEN env var
+ * 4. Application Default Credentials (ADC) - for local dev with gcloud auth
  * 5. Metadata server (when running on GCP)
+ * 
+ * Note: API keys don't work with Vertex AI endpoints - they only work with Gemini API endpoints.
+ * For Vertex AI (aiplatform.googleapis.com), use OAuth2 tokens from service accounts.
  */
 
 import { GoogleAuth } from "google-auth-library"
@@ -56,7 +59,7 @@ export async function getGoogleCloudAccessToken(): Promise<string | null> {
     logger.debug("Metadata server not available (not running on GCP)")
   }
 
-  // Method 3: Service account from individual env vars (like Renoir project)
+  // Method 3: Service account from individual env vars (like RENOIR project) - ✅ Recommended for Vertex AI
   if (
     process.env.GOOGLE_CLIENT_EMAIL &&
     process.env.GOOGLE_PRIVATE_KEY &&
@@ -64,10 +67,14 @@ export async function getGoogleCloudAccessToken(): Promise<string | null> {
   ) {
     try {
       const credentials = {
-        client_email: process.env.GOOGLE_CLIENT_EMAIL,
-        private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, "\n"), // Handle escaped newlines
-        client_id: process.env.GOOGLE_CLIENT_ID,
+        type: "service_account",
         project_id: process.env.GOOGLE_CLOUD_PROJECT_ID || process.env.GOOGLE_PROJECT_ID,
+        private_key_id: process.env.GOOGLE_PRIVATE_KEY_ID,
+        private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, "\n"), // Handle escaped newlines
+        client_email: process.env.GOOGLE_CLIENT_EMAIL,
+        client_id: process.env.GOOGLE_CLIENT_ID,
+        auth_uri: "https://accounts.google.com/o/oauth2/auth",
+        token_uri: "https://oauth2.googleapis.com/token",
       }
 
       const auth = new GoogleAuth({
@@ -78,7 +85,7 @@ export async function getGoogleCloudAccessToken(): Promise<string | null> {
       const accessToken = await client.getAccessToken()
       
       if (accessToken.token) {
-        logger.debug("Retrieved access token from service account env vars")
+        logger.debug("Retrieved access token from service account env vars (RENOIR pattern)")
         return accessToken.token
       }
     } catch (error) {
@@ -116,6 +123,8 @@ export function getGoogleCloudApiKey(): string | null {
 
 /**
  * Get Google Cloud configuration
+ * Note: For Vertex AI endpoints, OAuth2 tokens (from service accounts) are required.
+ * API keys only work with Gemini API endpoints, not Vertex AI.
  */
 export async function getGoogleCloudConfig(): Promise<GoogleCloudConfig | null> {
   const projectId = process.env.GOOGLE_CLOUD_PROJECT_ID
@@ -124,27 +133,29 @@ export async function getGoogleCloudConfig(): Promise<GoogleCloudConfig | null> 
   }
 
   const location = process.env.GOOGLE_CLOUD_LOCATION || "us-central1"
-  const apiKey = getGoogleCloudApiKey()
   const accessToken = await getGoogleCloudAccessToken()
+  // API keys are only for Gemini API, not Vertex AI - don't use for Vertex AI endpoints
+  const apiKey = getGoogleCloudApiKey()
 
   return {
     projectId,
     location,
     accessToken: accessToken || undefined,
-    apiKey: apiKey || undefined,
+    apiKey: apiKey || undefined, // Only used for Gemini API endpoints, not Vertex AI
   }
 }
 
 /**
  * Build Vertex AI API endpoint URL
- * If apiKey is provided, adds it as a query parameter
+ * Note: Vertex AI endpoints require OAuth2 tokens, NOT API keys.
+ * API keys only work with Gemini API endpoints (generativelanguage.googleapis.com).
  */
 export function buildVertexAIEndpoint(
   projectId: string,
   location: string,
   model: string,
   method: "generateContent" | "predictLongRunning" | "fetchPredictOperation" = "generateContent",
-  apiKey?: string
+  apiKey?: string // Ignored for Vertex AI - only used for Gemini API endpoints
 ): string {
   const baseUrl = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}`
   
@@ -157,30 +168,28 @@ export function buildVertexAIEndpoint(
     endpoint = `${baseUrl}:generateContent`
   }
   
-  // Add API key as query parameter if provided
-  if (apiKey) {
-    endpoint += `?key=${encodeURIComponent(apiKey)}`
-  }
+  // Note: API keys don't work with Vertex AI endpoints - they require OAuth2 Bearer tokens
+  // API keys only work with Gemini API: https://generativelanguage.googleapis.com/...
   
   return endpoint
 }
 
 /**
  * Get authorization headers for Vertex AI API
- * Returns headers with Authorization if token is available
- * Note: If API key is used, it's added to the URL query string, not headers
+ * Vertex AI endpoints require OAuth2 Bearer tokens (from service accounts), NOT API keys.
+ * Matching RENOIR wardrobe project pattern.
  */
-export async function getVertexAIHeaders(useApiKey = false): Promise<Record<string, string>> {
+export async function getVertexAIHeaders(): Promise<Record<string, string>> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   }
 
-  // Only add Bearer token if not using API key
-  if (!useApiKey) {
-    const token = await getGoogleCloudAccessToken()
-    if (token) {
-      headers.Authorization = `Bearer ${token}`
-    }
+  // Vertex AI requires OAuth2 Bearer token (from service account)
+  const token = await getGoogleCloudAccessToken()
+  if (token) {
+    headers.Authorization = `Bearer ${token}`
+  } else {
+    logger.warn("No access token available for Vertex AI - authentication will fail. Ensure service account credentials are set.")
   }
 
   return headers

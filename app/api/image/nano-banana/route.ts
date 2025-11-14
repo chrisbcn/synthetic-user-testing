@@ -3,13 +3,20 @@ import { logger, AppError, createErrorResponse, sanitizeString } from "@/lib/uti
 import { getGoogleCloudConfig, buildVertexAIEndpoint, getVertexAIHeaders } from "@/lib/google-cloud"
 
 /**
- * Google Cloud Vertex AI Nano Banana (Gemini 2.5 Flash Image Preview) API
+ * Google Cloud Vertex AI Nano Banana (Gemini 2.5 Flash Image) API
  * 
- * Endpoint: https://aiplatform.googleapis.com/v1/projects/{PROJECT_ID}/locations/{LOCATION}/publishers/google/models/gemini-2.5-flash-image-preview:generateContent
+ * Matching RENOIR wardrobe project pattern:
+ * - Uses service account credentials (GOOGLE_CLIENT_EMAIL, GOOGLE_PRIVATE_KEY, GOOGLE_CLIENT_ID)
+ * - Uses OAuth2 Bearer tokens (not API keys)
+ * - Model: gemini-2.5-flash-image (not -preview)
+ * 
+ * Endpoint: https://us-central1-aiplatform.googleapis.com/v1/projects/{PROJECT_ID}/locations/us-central1/publishers/google/models/gemini-2.5-flash-image:generateContent
  * 
  * Required environment variables:
  * - GOOGLE_CLOUD_PROJECT_ID: Your GCP project ID
- * - GOOGLE_CLOUD_ACCESS_TOKEN: Access token (or use ADC)
+ * - GOOGLE_CLIENT_EMAIL: Service account email
+ * - GOOGLE_PRIVATE_KEY: Service account private key
+ * - GOOGLE_CLIENT_ID: Service account client ID
  */
 
 interface NanoBananaRequest {
@@ -50,21 +57,20 @@ export async function POST(request: NextRequest) {
 
     const sanitizedPrompt = sanitizeString(prompt, 5000)
 
-    // Build Vertex AI API endpoint
-    const useApiKey = !!config.apiKey
+    // Build Vertex AI API endpoint (matching RENOIR pattern)
+    // Model name: gemini-2.5-flash-image (not -preview)
     const endpoint = buildVertexAIEndpoint(
       config.projectId,
       config.location,
-      "gemini-2.5-flash-image-preview",
-      "generateContent",
-      config.apiKey
+      "gemini-2.5-flash-image", // RENOIR uses this model name
+      "generateContent"
     )
 
     logger.debug("Calling Nano Banana API", {
       projectId: config.projectId,
       location: config.location,
       promptLength: sanitizedPrompt.length,
-      useApiKey,
+      endpoint,
     })
 
     // Prepare request payload
@@ -85,8 +91,8 @@ export async function POST(request: NextRequest) {
       },
     }
 
-    // Get authorization headers (API key is in URL, not headers)
-    const headers = await getVertexAIHeaders(useApiKey)
+    // Get authorization headers (OAuth2 Bearer token - matching RENOIR pattern)
+    const headers = await getVertexAIHeaders()
 
     const imageResponse = await fetch(endpoint, {
       method: "POST",
