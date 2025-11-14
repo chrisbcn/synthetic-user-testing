@@ -39,7 +39,29 @@ export async function POST(request: NextRequest) {
           }),
         })
 
-        const veo3Result = await veo3Response.json()
+        let veo3Result
+        try {
+          veo3Result = await veo3Response.json()
+        } catch (jsonError) {
+          // If JSON parsing fails, get text response
+          const errorText = await veo3Response.text()
+          logger.error("Veo 3 response parsing failed", { status: veo3Response.status, errorText })
+          
+          if (provider === "veo3") {
+            return NextResponse.json({
+              success: false,
+              error: `Veo 3 API error: ${veo3Response.status} - ${errorText.substring(0, 500)}`,
+              message: "Failed to generate video with Veo 3",
+              instructions: "Please check your Google Cloud configuration and Veo 3 API access. Check server logs for details.",
+              videoUrl: null,
+              thumbnailUrl: null,
+              status: "error",
+              provider: "veo-3",
+              generatedAt: new Date().toISOString(),
+            }, { status: veo3Response.status || 500 })
+          }
+          throw new Error(`Veo 3 response parsing failed: ${errorText}`)
+        }
 
         if (veo3Response.ok && veo3Result.success) {
           logger.info("Veo 3 video generation successful")
@@ -52,15 +74,16 @@ export async function POST(request: NextRequest) {
           logger.error("Veo 3 generation failed", {
             status: veo3Response.status,
             error: veo3Result.error || veo3Result.message,
+            fullResponse: veo3Result,
           })
           
-          // If provider is explicitly "veo3", don't fall back - return the error
-          if (provider === "veo3") {
+          // ALWAYS return error for veo3 provider - never fall back
+          if (provider === "veo3" || provider === "auto") {
             return NextResponse.json({
               success: false,
               error: veo3Result.error || `Veo 3 API error: ${veo3Response.status}`,
               message: veo3Result.message || "Failed to generate video with Veo 3",
-              instructions: veo3Result.instructions || "Please check your Google Cloud configuration and Veo 3 API access.",
+              instructions: veo3Result.instructions || "Please check your Google Cloud configuration and Veo 3 API access. Check server logs for details.",
               videoUrl: null,
               thumbnailUrl: null,
               status: "error",
@@ -68,23 +91,18 @@ export async function POST(request: NextRequest) {
               generatedAt: new Date().toISOString(),
             }, { status: veo3Response.status || 500 })
           }
-          
-          // For "auto" provider, log and continue to fallback
-          logger.warn("Veo 3 generation failed, falling back to other providers", {
-            error: veo3Result.error,
-          })
         }
       } catch (veo3Error) {
         logger.error("Veo 3 request error", veo3Error)
         
-        // If provider is explicitly "veo3", don't fall back - return the error
-        if (provider === "veo3") {
+        // NEVER fall back when Veo 3 is requested - always return the error
+        if (provider === "veo3" || provider === "auto") {
           const errorMessage = veo3Error instanceof Error ? veo3Error.message : "Unknown error"
           return NextResponse.json({
             success: false,
             error: `Veo 3 request failed: ${errorMessage}`,
             message: "Failed to connect to Veo 3 API",
-            instructions: "Please check your Google Cloud configuration and network connection.",
+            instructions: "Please check your Google Cloud configuration, Vertex AI API access, and network connection. Check server logs for details.",
             videoUrl: null,
             thumbnailUrl: null,
             status: "error",
@@ -92,10 +110,22 @@ export async function POST(request: NextRequest) {
             generatedAt: new Date().toISOString(),
           }, { status: 500 })
         }
-        
-        // For "auto" provider, log and continue to fallback
-        logger.warn("Veo 3 error, falling back to other providers", veo3Error)
       }
+    }
+
+    // If we get here and provider was "veo3", something went wrong
+    if (provider === "veo3") {
+      return NextResponse.json({
+        success: false,
+        error: "Veo 3 is not configured. GOOGLE_CLOUD_PROJECT_ID environment variable is required.",
+        message: "Veo 3 video generation is not available",
+        instructions: "Please set GOOGLE_CLOUD_PROJECT_ID in your environment variables.",
+        videoUrl: null,
+        thumbnailUrl: null,
+        status: "error",
+        provider: "veo-3",
+        generatedAt: new Date().toISOString(),
+      }, { status: 500 })
     }
 
     if (runwayApiKey) {
